@@ -53,25 +53,13 @@
             var server = require('http').createServer(function (req, res) {
             });
             server.listen(RealtimeMultiplayerGame.Constants.SERVER_SETTING.SOCKET_PORT);
-            this.socketio = require('socket.io').listen(server);
+            this.socketio = require('socket.io')({
+                transports  : [ 'websocket' ],
+            })
+
+            this.socketio.listen(server);
 
             var that = this;
-            this.socketio.configure('production', function () {
-                that.socketio.enable('browser client etag');
-                that.socketio.set('log level', 1);
-
-                that.socketio.set('transports', [
-                    'websocket'
-                    , 'flashsocket'
-                    , 'htmlfile'
-                    , 'xhr-polling'
-                    , 'jsonp-polling'
-                ]);
-            });
-
-            this.socketio.configure('development', function () {
-                that.socketio.set('transports', ['websocket']);
-            });
 
             this.socketio.on('connection', function (socket) {
                 console.log(socket);

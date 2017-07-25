@@ -264,7 +264,7 @@
                 return;
             }
 
-            if (!this.socketio.socket.connected) { // Socket.IO is not connectd, probably not ready yet
+            if (!this.socketio.connected) { // Socket.IO is not connectd, probably not ready yet
                 // console.log("(ClientNetChannel)::sendMessage - socketio is undefined!");
                 return;      //some error here
             }
