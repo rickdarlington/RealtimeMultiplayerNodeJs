@@ -1,3 +1,6 @@
+* Forked and updated for socket.io 2.x
+
+
 __RealtimeMultiplayerNodeJS is a framework specifically for building HTML5 multiplayer games with the Client / Server model__  
 
 ######ChangeLog: 
