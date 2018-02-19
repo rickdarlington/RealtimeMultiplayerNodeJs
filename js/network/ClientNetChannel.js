@@ -30,7 +30,6 @@
     RealtimeMultiplayerGame.ClientNetChannel = function (aDelegate) {
         this.setDelegate(aDelegate);
         this.setupSocketIO();
-//		this.setupWSClient();
         this.setupCmdMap();
         return this;
     };
@@ -58,8 +57,7 @@
 
 
         setupSocketIO: function () {
-            debugger;
-            this.socketio = new io.connect(RealtimeMultiplayerGame.Constants.SERVER_SETTING.GET_URI(), {transports: ['websocket', 'xhr-polling', 'jsonp-polling'], reconnect: false, rememberTransport: false});
+            this.socketio = io(RealtimeMultiplayerGame.Constants.SERVER_SETTING.GET_URI());
 
             var that = this;
             this.socketio.on('connect', function () {
@@ -73,24 +71,6 @@
             });
         },
 
-        setupWSClient: function () {
-            var that = this;
-            this.connection = new WebSocket("ws://localhost:" + RealtimeMultiplayerGame.Constants.SERVER_SETTING.SOCKET_PORT + "/");
-            this.socketio = this.connection;
-            this.connection.onopen = function () {
-                DemoHelloWorld.DemoClientGame.prototype.log("Connection.onopen");
-            };
-
-            this.connection.onmessage = function (event) {
-                //DemoHelloWorld.DemoClientGame.prototype.log("Connection.onmessage");
-                var message = BISON.decode(event.data);
-                that.onSocketDidAcceptConnection(message);
-            };
-            this.connection.onclose = function (event) {
-                DemoHelloWorld.DemoClientGame.prototype.log("Connection.onclose");
-                that.onSocketDisconnect();
-            };
-        },
 
         /**
          * Map RealtimeMultiplayerGame.Constants.CMDS to functions
@@ -292,7 +272,7 @@
             var message = new RealtimeMultiplayerGame.model.NetChannelMessage(this.outgoingSequenceNumber, this.clientid, isReliable, aCommandConstant, payload);
 
             // Add to array the queue using bitmask to wrap values
-            this.messageBuffer[ this.outgoingSequenceNumber & BUFFER_MASK ] = message;
+            this.messageBuffer[this.outgoingSequenceNumber & BUFFER_MASK] = message;
 
             if (!isReliable) {
                 this.nextUnreliable = message;

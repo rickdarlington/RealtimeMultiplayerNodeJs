@@ -4,12 +4,18 @@
   "description": "RealtimeMultiplayerNodeJS is a framework specifically for building HTML5 multiplayer games with the Client / Server model",
   "main": "js/BubbleDots/server.js",
   "dependencies": {
+    "jquery": "^3.3.1",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-loader": "^7.1.2",
+    "webpack": "^3.11.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
+    "start": "http-server",
+    "webpack": "webpack"
   },
   "repository": {
     "type": "git",
