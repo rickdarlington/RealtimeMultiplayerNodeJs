@@ -102,6 +102,16 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _DemoAppConstants = __webpack_require__(2);
+
+var _DemoAppConstants2 = _interopRequireDefault(_DemoAppConstants);
+
+var _CircleEntity = __webpack_require__(3);
+
+var _CircleEntity2 = _interopRequireDefault(_CircleEntity);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -140,27 +150,27 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
     }
 
     _createClass(DemoClientGame, [{
-        key: "setupView",
+        key: 'setupView',
         value: function setupView() {
             this.view = new DemoApp.DemoView();
             this.view.insertIntoHTMLElementWithId("gamecontainer");
 
-            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), "setupView", this).call(this, this);
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'setupView', this).call(this, this);
         }
     }, {
-        key: "tick",
+        key: 'tick',
 
 
         /**
          * @inheritDoc
          */
         value: function tick() {
-            this.superclass.tick.call(this);
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'tick', this).call(this);
             this.view.stats.update();
             this.view.update(this.gameClockReal);
         }
     }, {
-        key: "createEntityFromDesc",
+        key: 'createEntityFromDesc',
 
 
         /**
@@ -181,7 +191,7 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
 
             var isOwnedByMe = entityDesc.clientid == this.netChannel.clientid;
             // If this is a player entity
-            if (entityDesc.entityType & Constants.ENTITY_TYPES.PLAYER_ENTITY) {
+            if (entityDesc.entityType & _DemoAppConstants2.default.ENTITY_TYPES.PLAYER_ENTITY) {
                 newEntity = new PlayerEntity(entityDesc.entityid, entityDesc.clientid);
 
                 // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
@@ -190,7 +200,7 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
                     this.clientCharacter = newEntity;
                 }
             } else {
-                newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
+                newEntity = new _CircleEntity2.default(entityDesc.entityid, entityDesc.clientid);
             }
 
             newEntity.position.set(entityDesc.x, entityDesc.y);
@@ -199,7 +209,7 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
             this.fieldController.addEntity(newEntity);
         }
     }, {
-        key: "parseEntityDescriptionArray",
+        key: 'parseEntityDescriptionArray',
 
 
         /**
@@ -225,30 +235,30 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
             return entityDescription;
         }
     }, {
-        key: "netChannelDidConnect",
+        key: 'netChannelDidConnect',
 
 
         /**
          * @inheritDoc
          */
         value: function netChannelDidConnect(messageData) {
-            this.superclass.netChannelDidConnect.call(this, messageData);
-            this.prototype.log("this: Joining Game");
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'netChannelDidConnect', this).call(this, messageData);
+            this.log("this: Joining Game");
             this.joinGame("Player" + this.netChannel.getClientid()); // Automatically join the game with some name
         }
     }, {
-        key: "netChannelDidDisconnect",
+        key: 'netChannelDidDisconnect',
 
 
         /**
          * @inheritDoc
          */
         value: function netChannelDidDisconnect(messageData) {
-            this.superclass.netChannelDidDisconnect.call(this, messageData);
-            this.prototype.log("this: netChannelDidDisconnect"); // Display disconnect
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'netChannelDidDisconnect', this).call(this, messageData);
+            this.log("netChannelDidDisconnect");
         }
     }, {
-        key: "log",
+        key: 'log',
 
 
         /**
@@ -264,6 +274,194 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
 }(RealtimeMultiplayerGame.AbstractClientGame);
 
 exports.default = DemoClientGame;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ File:
+ DemoAppConstants.js
+ Created By:
+ Mario Gonzalez
+ Project:
+ RealtimeMultiplayerNodeJS - Demo
+ Abstract:
+ This class contains Constants used by the DemoApp in RealtimeMultiplayerGame
+ Basic Usage:
+ [This class is not instantiated! - below is an example of using this class by extending it]
+ var clientDropWait = RealtimeMultiplayerGame.Constants.CL_DEFAULT_MAXRATE
+
+ Version:
+ 1.0
+ */
+var Constants = function Constants() {
+  _classCallCheck(this, Constants);
+};
+
+exports.default = Constants;
+
+Constants.ENTITY_DEFAULT_RADIUS = 8;
+Constants.GAME_WIDTH = 700;
+Constants.GAME_HEIGHT = 450;
+Constants.MAX_CIRCLES = 100;
+Constants.GAME_DURATION = 1000 * 300;
+
+Constants.ENTITY_TYPES = {
+  UNKNOWN: 1 << 0,
+  GENERIC_CIRCLE: 1 << 1,
+  PLAYER_ENTITY: 1 << 2
+};
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ File:
+ DemoApp.CircleEntity
+ Created By:
+ Mario Gonzalez
+ Project:
+ DemoApp
+ Abstract:
+ This is the base entity for the demo game
+ Basic Usage:
+
+ Version:
+ 1.0
+ */
+(function () {
+
+    var nOffset = Math.random() * 2000;
+    DemoApp.CircleEntity = function (anEntityid, aClientid) {
+        DemoApp.CircleEntity.superclass.constructor.call(this, anEntityid, aClientid);
+
+        this.setColor("FFFFFF");
+        this.velocity = new RealtimeMultiplayerGame.model.Point(0, 0);
+        this.acceleration = new RealtimeMultiplayerGame.model.Point(0, 0);
+        return this;
+    };
+
+    DemoApp.CircleEntity.prototype = {
+        radius: DemoApp.Constants.ENTITY_DEFAULT_RADIUS,
+        velocity: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
+        acceleration: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
+        collisionCircle: null, // An instance of RealtimeMultiplayerGame.modules.circlecollision.PackedCircle
+        entityType: DemoApp.Constants.ENTITY_TYPES.GENERIC_CIRCLE,
+
+        /**
+         * Update the entity's view - this is only called on the clientside
+         */
+        updateView: function updateView() {
+            if (!this.view) return;
+            this.view.x = this.position.x - this.radius;
+            this.view.y = this.position.y - this.radius;
+
+            var diameter = this.lastReceivedEntityDescription.radius * 2;
+            this.view.setSize(diameter, diameter);
+            this.view.setFillStyle("#" + this.lastReceivedEntityDescription.color);
+        },
+
+        /**
+         * Update position of this entity - this is only called on the serverside
+         * @param {Number} speedFactor    A number signifying how much faster or slower we are moving than the target framerate
+         * @param {Number} gameClock    Current game time in seconds (zero based)
+         * @param {Number} gameTick        Current game tick (incrimented each frame)
+         */
+        updatePosition: function updatePosition(speedFactor, gameClock, gameTick) {
+
+            // Modify velocity using perlin noise
+            var theta = 0.008;
+
+            var noise = RealtimeMultiplayerGame.model.noise(nOffset + this.position.x * theta, nOffset + this.position.y * theta, gameTick * 0.003);
+            var angle = noise * 12;
+            var speed = 0.2;
+            this.acceleration.x += Math.cos(angle) * speed - 0.3;
+            this.acceleration.y -= Math.sin(angle) * speed;
+
+            this.velocity.translatePoint(this.acceleration);
+            this.velocity.limit(5);
+            this.velocity.multiply(0.9);
+            this.acceleration.set(0, 0);
+            this.collisionCircle.position.translatePoint(this.velocity);
+            this.position = this.collisionCircle.position.clone();
+        },
+
+        tempColor: function tempColor() {
+            var that = this;
+
+            clearTimeout(this.timeout);
+            this.color = "FF0000";
+            this.timeout = setTimeout(function () {
+                that.setColor(that.originalColor);
+            }, 50);
+        },
+
+        /**
+         * Deallocate memory
+         */
+        dealloc: function dealloc() {
+            this.collisionCircle.dealloc();
+            this.collisionCircle = null;
+            DemoApp.CircleEntity.superclass.dealloc.call(this);
+        },
+
+        constructEntityDescription: function constructEntityDescription() {
+            return DemoApp.CircleEntity.superclass.constructEntityDescription.call(this) + ',' + this.radius + ',' + this.color;
+        },
+
+        ///// ACCESSORS
+        /**
+         * Set the CollisionCircle for this game entity.
+         * @param aCollisionCircle
+         */
+        setCollisionCircle: function setCollisionCircle(aCollisionCircle) {
+            this.collisionCircle = aCollisionCircle;
+            this.collisionCircle.setDelegate(this);
+            this.collisionCircle.setPosition(this.position.clone());
+            this.collisionCircle.setRadius(this.radius);
+            this.collisionCircle.collisionMask = 1;
+            this.collisionCircle.collisionGroup = 1;
+        },
+        getCollisionCircle: function getCollisionCircle() {
+            return this.collisionCircle;
+        },
+
+        /**
+         * Set the color of this entity, a property originalColor is also stored
+         * @param aColor
+         */
+        setColor: function setColor(aColor) {
+            if (!this.originalColor) {
+                this.originalColor = aColor;
+            }
+
+            this.color = aColor;
+        },
+        getColor: function getColor() {
+            return this.color;
+        },
+        getOriginalColor: function getOriginalColor() {
+            return this.originalColor;
+        }
+    };
+
+    // extend RealtimeMultiplayerGame.model.GameEntity
+    RealtimeMultiplayerGame.extend(DemoApp.CircleEntity, RealtimeMultiplayerGame.model.GameEntity, null);
+})();
 
 /***/ })
 /******/ ]);

@@ -1,3 +1,6 @@
+import Constants from './DemoAppConstants';
+import CircleEntity from './CircleEntity';
+
 /**
  File:
  DemoServerGame
@@ -35,7 +38,7 @@ export default class DemoClientGame extends RealtimeMultiplayerGame.AbstractClie
      * @inheritDoc
      */
     tick() {
-        this.superclass.tick.call(this);
+        super.tick();
         this.view.stats.update();
         this.view.update(this.gameClockReal);
     };
@@ -103,8 +106,8 @@ export default class DemoClientGame extends RealtimeMultiplayerGame.AbstractClie
      * @inheritDoc
      */
     netChannelDidConnect(messageData) {
-        this.superclass.netChannelDidConnect.call(this, messageData);
-        this.prototype.log("this: Joining Game");
+        super.netChannelDidConnect(messageData);
+        this.log("this: Joining Game");
         this.joinGame("Player" + this.netChannel.getClientid()); // Automatically join the game with some name
     };
 
@@ -112,8 +115,8 @@ export default class DemoClientGame extends RealtimeMultiplayerGame.AbstractClie
      * @inheritDoc
      */
     netChannelDidDisconnect(messageData) {
-        this.superclass.netChannelDidDisconnect.call(this, messageData);
-        this.prototype.log("this: netChannelDidDisconnect"); // Display disconnect
+        super.netChannelDidDisconnect(messageData);
+        this.log("netChannelDidDisconnect");
     };
 
     /**
