@@ -1,3 +1,5 @@
+var Constants = require('./DemoAppConstants');
+
 /**
  File:
  DemoServerGame
@@ -20,7 +22,7 @@
     DemoApp.DemoServerGame = function () {
         DemoApp.DemoServerGame.superclass.constructor.call(this);
 
-        this.setGameDuration(DemoApp.Constants.GAME_DURATION);
+        this.setGameDuration(Constants.GAME_DURATION);
         this.setupCollisionManager();
         this.setupRandomField();
         return this;
@@ -42,7 +44,7 @@
         setupCollisionManager: function () {
             // Collision simulation
             this.collisionManager = new RealtimeMultiplayerGame.modules.circlecollision.CircleManager();
-            this.collisionManager.setBounds(0, 0, DemoApp.Constants.GAME_WIDTH, DemoApp.Constants.GAME_HEIGHT);
+            this.collisionManager.setBounds(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
             this.collisionManager.setNumberOfCollisionPasses(2);
             this.collisionManager.setNumberOfTargetingPasses(0);
             this.collisionManager.setCallback(this.onCollisionManagerCollision, this);
@@ -61,9 +63,9 @@
          */
         setupRandomField: function () {
             //RealtimeMultiplayerGame.model.noise(10, 10, i/total)
-            var total = DemoApp.Constants.MAX_CIRCLES;
+            var total = Constants.MAX_CIRCLES;
             for (var i = 0; i < total; i++) {
-                var radius = DemoApp.Constants.ENTITY_DEFAULT_RADIUS + Math.random() * 5;
+                var radius = Constants.ENTITY_DEFAULT_RADIUS + Math.random() * 5;
                 this.createCircleEntity(radius, this.getNextEntityID(), RealtimeMultiplayerGame.Constants.SERVER_SETTING.CLIENT_ID);
             }
         },
@@ -82,21 +84,21 @@
             // Create the GameEntity
             var circleEntity = new DemoApp.CircleEntity(anEntityid, aClientid);
             circleEntity.radius = aRadius;
-            circleEntity.position.set(Math.random() * DemoApp.Constants.GAME_WIDTH, Math.random() * DemoApp.Constants.GAME_HEIGHT);
+            circleEntity.position.set(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
             circleEntity.setCollisionCircle(collisionCircle);
 
             // Place the circle and collision circle into corresponding containers
             this.collisionManager.addCircle(circleEntity.getCollisionCircle());
             this.fieldController.addEntity(circleEntity);
 
-            circleEntity.entityType = DemoApp.Constants.ENTITY_TYPES.GENERIC_CIRCLE;
+            circleEntity.entityType = Constants.ENTITY_TYPES.GENERIC_CIRCLE;
             return circleEntity;
         },
 
         createPlayerEntity: function (anEntityid, aClientid) {
             // Create the GameEntity
             var playerEntity = new DemoApp.PlayerEntity(anEntityid, aClientid);
-            playerEntity.position.set(Math.random() * DemoApp.Constants.GAME_WIDTH, Math.random() * DemoApp.Constants.GAME_HEIGHT);
+            playerEntity.position.set(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
 
             var collisionCircle = new RealtimeMultiplayerGame.modules.circlecollision.PackedCircle();
             collisionCircle.setRadius(playerEntity.radius);

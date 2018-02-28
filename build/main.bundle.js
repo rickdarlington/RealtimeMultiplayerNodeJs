@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,25 +70,64 @@
 "use strict";
 
 
-var _DemoClientGame = __webpack_require__(1);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ File:
+ DemoAppConstants.js
+ Created By:
+ Mario Gonzalez
+ Project:
+ RealtimeMultiplayerNodeJS - Demo
+ Abstract:
+ This class contains Constants used by the DemoApp in RealtimeMultiplayerGame
+ Basic Usage:
+ [This class is not instantiated! - below is an example of using this class by extending it]
+ var clientDropWait = RealtimeMultiplayerGame.Constants.CL_DEFAULT_MAXRATE
+
+ Version:
+ 1.0
+ */
+module.exports = function () {
+    var Constants = function Constants() {
+        _classCallCheck(this, Constants);
+    };
+
+    Constants.ENTITY_DEFAULT_RADIUS = 8;
+    Constants.GAME_WIDTH = 700;
+    Constants.GAME_HEIGHT = 450;
+    Constants.MAX_CIRCLES = 100;
+    Constants.GAME_DURATION = 1000 * 300;
+    Constants.UNKNOWN = 1 << 0;
+    Constants.GENERIC_CIRCLE = 1 << 1;
+    Constants.PLAYER_ENTITY = 1 << 2;
+
+    Constants.ENTITY_TYPES = {};
+};
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _DemoClientGame = __webpack_require__(2);
 
 var _DemoClientGame2 = _interopRequireDefault(_DemoClientGame);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (function () {
-    var WEB_SOCKET_SWF_LOCATION = "ABC";
-    // Callback for when browse is ready
     var onDocumentReady = function onDocumentReady() {
         var clientGame = new _DemoClientGame2.default();
     };
 
-    // Listen for ready
     window.addEventListener('load', onDocumentReady, false);
 })();
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -102,21 +141,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _DemoAppConstants = __webpack_require__(2);
-
-var _DemoAppConstants2 = _interopRequireDefault(_DemoAppConstants);
-
-var _CircleEntity = __webpack_require__(3);
-
-var _CircleEntity2 = _interopRequireDefault(_CircleEntity);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Constants = __webpack_require__(0);
+var CircleEntity = __webpack_require__(3);
+var DemoView = __webpack_require__(4);
 
 /**
  File:
@@ -152,7 +185,7 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
     _createClass(DemoClientGame, [{
         key: 'setupView',
         value: function setupView() {
-            this.view = new DemoApp.DemoView();
+            this.view = new DemoView();
             this.view.insertIntoHTMLElementWithId("gamecontainer");
 
             _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'setupView', this).call(this, this);
@@ -191,7 +224,7 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
 
             var isOwnedByMe = entityDesc.clientid == this.netChannel.clientid;
             // If this is a player entity
-            if (entityDesc.entityType & _DemoAppConstants2.default.ENTITY_TYPES.PLAYER_ENTITY) {
+            if (entityDesc.entityType & Constants.ENTITY_TYPES.PLAYER_ENTITY) {
                 newEntity = new PlayerEntity(entityDesc.entityid, entityDesc.clientid);
 
                 // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
@@ -200,7 +233,7 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
                     this.clientCharacter = newEntity;
                 }
             } else {
-                newEntity = new _CircleEntity2.default(entityDesc.entityid, entityDesc.clientid);
+                newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
             }
 
             newEntity.position.set(entityDesc.x, entityDesc.y);
@@ -276,58 +309,13 @@ var DemoClientGame = function (_RealtimeMultiplayerG) {
 exports.default = DemoClientGame;
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- File:
- DemoAppConstants.js
- Created By:
- Mario Gonzalez
- Project:
- RealtimeMultiplayerNodeJS - Demo
- Abstract:
- This class contains Constants used by the DemoApp in RealtimeMultiplayerGame
- Basic Usage:
- [This class is not instantiated! - below is an example of using this class by extending it]
- var clientDropWait = RealtimeMultiplayerGame.Constants.CL_DEFAULT_MAXRATE
-
- Version:
- 1.0
- */
-var Constants = function Constants() {
-  _classCallCheck(this, Constants);
-};
-
-exports.default = Constants;
-
-Constants.ENTITY_DEFAULT_RADIUS = 8;
-Constants.GAME_WIDTH = 700;
-Constants.GAME_HEIGHT = 450;
-Constants.MAX_CIRCLES = 100;
-Constants.GAME_DURATION = 1000 * 300;
-
-Constants.ENTITY_TYPES = {
-  UNKNOWN: 1 << 0,
-  GENERIC_CIRCLE: 1 << 1,
-  PLAYER_ENTITY: 1 << 2
-};
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+
+var Constants = __webpack_require__(0);
 
 /**
  File:
@@ -356,11 +344,11 @@ Constants.ENTITY_TYPES = {
     };
 
     DemoApp.CircleEntity.prototype = {
-        radius: DemoApp.Constants.ENTITY_DEFAULT_RADIUS,
+        radius: Constants.ENTITY_DEFAULT_RADIUS,
         velocity: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
         acceleration: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
         collisionCircle: null, // An instance of RealtimeMultiplayerGame.modules.circlecollision.PackedCircle
-        entityType: DemoApp.Constants.ENTITY_TYPES.GENERIC_CIRCLE,
+        entityType: Constants.GENERIC_CIRCLE,
 
         /**
          * Update the entity's view - this is only called on the clientside
@@ -462,6 +450,139 @@ Constants.ENTITY_TYPES = {
     // extend RealtimeMultiplayerGame.model.GameEntity
     RealtimeMultiplayerGame.extend(DemoApp.CircleEntity, RealtimeMultiplayerGame.model.GameEntity, null);
 })();
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Constants = __webpack_require__(0);
+/**
+ File:
+ AbstractServerGame.js
+ Created By:
+ Mario Gonzalez
+ Project:
+ RealtimeMultiplayerNodeJS
+ Abstract:
+ This class is the base Game controller in RealtimeMultiplayerGame on the server side.
+ It provides things such as dropping players, and contains a ServerNetChannel
+ Basic Usage:
+ [This class is not instantiated! - below is an example of using this class by extending it]
+
+ (function(){
+		MyGameClass = function() {
+			return this;
+ 		}
+
+		RealtimeMultiplayerGame.extend(MyGameClass, RealtimeMultiplayerGame.AbstractServerGame, null);
+	};
+ Version:
+ 1.0
+ */
+
+var DemoView = function () {
+    function DemoView() {
+        _classCallCheck(this, DemoView);
+
+        this.setupCAAT();
+        this.setupStats();
+        this.caatDirector = null; // CAAT Director instance
+        this.caatScene = null; // CAAT Scene instance
+        this.stats = null; // Stats.js instance
+    }
+
+    _createClass(DemoView, [{
+        key: 'setupCAAT',
+
+
+        // Methods
+        value: function setupCAAT() {
+            this.caatScene = new CAAT.Scene(); // Create a scene, all directors must have at least one scene - this is where all your stuff goes
+            this.caatScene.create(); // Notice we call create when creating this, and ShapeActor below. Both are Actors
+            this.caatScene.setFillStyle('#000000');
+
+            this.caatDirector = new CAAT.Director().initialize(Constants.GAME_WIDTH, Constants.GAME_HEIGHT); // Create the director instance
+            this.caatDirector.addScene(this.caatScene); // Immediately add the scene once it's created
+
+            // Start the render loop, with at 60FPS
+            //			this.caatDirector.loop(60);
+        }
+
+        /**
+         * Updates our current view, passing along the current actual time (via Date().getTime());
+         * @param {Number} gameClockReal The current actual time, according to the game
+         */
+
+    }, {
+        key: 'update',
+        value: function update(gameClockReal) {
+            var delta = gameClockReal - this.caatDirector.timeline;
+            this.caatDirector.render(delta);
+            this.caatDirector.timeline = gameClockReal;
+        }
+
+        /**
+         * Creates a Stats.js instance and adds it to the page
+         */
+
+    }, {
+        key: 'setupStats',
+        value: function setupStats() {
+            var container = document.createElement('div');
+            this.stats = new Stats();
+            this.stats.domElement.style.position = 'absolute';
+            this.stats.domElement.style.top = '0px';
+            container.appendChild(this.stats.domElement);
+            document.body.appendChild(container);
+        }
+    }, {
+        key: 'addEntity',
+        value: function addEntity(anEntityView) {
+            console.log("Adding Entity To CAAT", anEntityView);
+            this.caatScene.addChild(anEntityView);
+        }
+    }, {
+        key: 'removeEntity',
+        value: function removeEntity(anEntityView) {
+            console.log("Removing Entity From CAAT", anEntityView);
+            this.caatScene.removeChild(anEntityView);
+        }
+
+        /**
+         * Insert the CAATDirector canvas into an HTMLElement
+         * @param {String} id An HTMLElement id
+         */
+
+    }, {
+        key: 'insertIntoHTMLElementWithId',
+        value: function insertIntoHTMLElementWithId(id) {
+            document.getElementById(id).appendChild(this.caatDirector.canvas);
+        }
+
+        // Memory
+
+    }, {
+        key: 'dealloc',
+        value: function dealloc() {
+            this.director.destroy();
+        }
+    }]);
+
+    return DemoView;
+}();
+
+exports.default = DemoView;
 
 /***/ })
 /******/ ]);

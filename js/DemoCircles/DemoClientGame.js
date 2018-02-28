@@ -1,5 +1,6 @@
-import Constants from './DemoAppConstants';
-import CircleEntity from './CircleEntity';
+var Constants = require('./DemoAppConstants');
+var CircleEntity = require('./CircleEntity');
+var DemoView = require('./DemoView');
 
 /**
  File:
@@ -28,7 +29,7 @@ export default class DemoClientGame extends RealtimeMultiplayerGame.AbstractClie
 
 
     setupView() {
-        this.view = new DemoApp.DemoView();
+        this.view = new DemoView();
         this.view.insertIntoHTMLElementWithId("gamecontainer");
 
         super.setupView(this);

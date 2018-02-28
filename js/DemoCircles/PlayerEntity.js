@@ -1,3 +1,4 @@
+var Constants = require('./DemoAppConstants');
 /**
  File:
  DemoApp.CircleEntity
@@ -21,7 +22,7 @@
     };
 
     DemoApp.PlayerEntity.prototype = {
-        entityType: DemoApp.Constants.ENTITY_TYPES.PLAYER_ENTITY,
+        entityType: Constants.PLAYER_ENTITY,
         input: null,
         radius: 40,
 

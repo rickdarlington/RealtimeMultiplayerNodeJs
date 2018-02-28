@@ -1,3 +1,5 @@
+var Constants = require('./DemoAppConstants');
+
 /**
  File:
  DemoApp.CircleEntity
@@ -25,11 +27,11 @@
     };
 
     DemoApp.CircleEntity.prototype = {
-        radius: DemoApp.Constants.ENTITY_DEFAULT_RADIUS,
+        radius: Constants.ENTITY_DEFAULT_RADIUS,
         velocity: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
         acceleration: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
         collisionCircle: null,										// An instance of RealtimeMultiplayerGame.modules.circlecollision.PackedCircle
-        entityType: DemoApp.Constants.ENTITY_TYPES.GENERIC_CIRCLE,
+        entityType: Constants.GENERIC_CIRCLE,
 
         /**
          * Update the entity's view - this is only called on the clientside

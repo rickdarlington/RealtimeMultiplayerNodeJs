@@ -14,16 +14,20 @@
  Version:
  1.0
  */
-export default class Constants {
-}
-Constants.ENTITY_DEFAULT_RADIUS = 8;
-Constants.GAME_WIDTH = 700;
-Constants.GAME_HEIGHT = 450;
-Constants.MAX_CIRCLES = 100;
-Constants.GAME_DURATION = 1000 * 300;
-
-Constants.ENTITY_TYPES = {
-    UNKNOWN: 1 << 0,
-    GENERIC_CIRCLE: 1 << 1,
-    PLAYER_ENTITY: 1 << 2
-}
+ module.exports = function(){
+     class Constants {
+         
+     }
+    Constants.ENTITY_DEFAULT_RADIUS = 8;
+    Constants.GAME_WIDTH = 700;
+    Constants.GAME_HEIGHT = 450;
+    Constants.MAX_CIRCLES = 100;
+    Constants.GAME_DURATION = 1000 * 300;
+    Constants.UNKNOWN = 1 << 0;
+    Constants.GENERIC_CIRCLE = 1 << 1;
+    Constants.PLAYER_ENTITY = 1 << 2;
+    
+    Constants.ENTITY_TYPES = {
+        
+    }
+ }
