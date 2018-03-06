@@ -1,6 +1,7 @@
 var Constants = require('./DemoAppConstants');
 var CircleEntity = require('./CircleEntity');
 var DemoView = require('./DemoView');
+var AbstractClientGame = require ('../core/AbstractClientGame');
 
 /**
  File:
@@ -19,7 +20,7 @@ var DemoView = require('./DemoView');
  1.0
  */
 
-export default class DemoClientGame extends RealtimeMultiplayerGame.AbstractClientGame {
+export default class DemoClientGame extends AbstractClientGame {
 
     constructor() {
         super();

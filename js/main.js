@@ -1,4 +1,4 @@
-import DemoClientGame from './DemoCircles/DemoClientGame';
+var DemoClientGame = require('./DemoCircles/DemoClientGame');
 
 (function () {
     var onDocumentReady = function () {
