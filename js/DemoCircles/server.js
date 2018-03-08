@@ -33,7 +33,7 @@ require("./DemoApp.js");
 require("./DemoAppConstants.js");
 require("./CircleEntity.js");
 require("./PlayerEntity.js");
-require("./DemoServerGame.js");
+var DemoServerGame = require("./DemoServerGame.js");
 
-var game = new DemoApp.DemoServerGame();
+var game = new DemoServerGame();
 game.startGameClock();

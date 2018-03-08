@@ -17,10 +17,13 @@
  var worldEntityDescription = new WorldEntityDescription( this );
  this.netChannel.tick( this.gameClock, worldEntityDescription );
  */
-(function () {
-    RealtimeMultiplayerGame.namespace("RealtimeMultiplayerGame.model");
+class WorldEntityDescription {
 
-    RealtimeMultiplayerGame.model.WorldEntityDescription = function (aGameInstance, allEntities) {
+    constructor(aGameInstance, allEntities) {
+        this.entities = null;
+        this.gameClock = 0;
+        this.gameTick = 0;
+        
         this.gameClock = aGameInstance.getGameClock();
         this.gameTick = aGameInstance.getGameTick();
         this.allEntities = allEntities;
@@ -31,28 +34,22 @@
 
 
         return this;
-    };
-
-    RealtimeMultiplayerGame.model.WorldEntityDescription.prototype = {
-        entities: null,
-        gameClock: 0,
-        gameTick: 0,
-
-        /**
-         * Ask each entity to create it's entity description
-         * Returns a single snapshot of the worlds current state as a '|' delimited string
-         * @return {String} A '|' delmited string of the current world state
-         */
-        getEntityDescriptionAsString: function () {
-            var len = this.allEntities.length;
-            var fullDescriptionString = '';
-
-            this.allEntities.forEach(function (key, entity) {
-                var entityDescriptionString = entity.constructEntityDescription(this.gameTick);
-                fullDescriptionString += "|" + entityDescriptionString;
-            }, this);
-
-            return fullDescriptionString;
-        }
     }
-})();
+
+    /**
+     * Ask each entity to create it's entity description
+     * Returns a single snapshot of the worlds current state as a '|' delimited string
+     * @return {String} A '|' delmited string of the current world state
+     */
+    getEntityDescriptionAsString() {
+        var len = this.allEntities.length;
+        var fullDescriptionString = '';
+
+        this.allEntities.forEach(function (key, entity) {
+            var entityDescriptionString = entity.constructEntityDescription(this.gameTick);
+            fullDescriptionString += "|" + entityDescriptionString;
+        }, this);
+
+        return fullDescriptionString;
+    }
+}

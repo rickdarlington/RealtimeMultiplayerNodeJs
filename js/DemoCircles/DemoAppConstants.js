@@ -15,9 +15,9 @@
  1.0
  */
  module.exports = function(){
-     class Constants {
-         
-     }
+    class Constants {
+        
+    }
     Constants.ENTITY_DEFAULT_RADIUS = 8;
     Constants.GAME_WIDTH = 700;
     Constants.GAME_HEIGHT = 450;

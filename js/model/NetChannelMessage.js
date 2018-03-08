@@ -25,9 +25,7 @@
  this.connection.send(message.encodedSelf());
  };
  */
-(function () {
-
-    RealtimeMultiplayerGame.namespace("RealtimeMultiplayerGame.model");
+class NetChannelMessage {
 
     /**
      * Creates a NetChannelMessage
@@ -36,7 +34,14 @@
      * @param aPayload                The message to send
      */
         //var message = new RealtimeMultiplayerGame.model.NetChannelMessage( this.outgoingSequenceNumber, this.clientID, isReliable, aCommandConstant, payload );
-    RealtimeMultiplayerGame.model.NetChannelMessage = function (aSequenceNumber, aClientid, isReliable, aCommandType, aPayload) {
+    constructor(aSequenceNumber, aClientid, isReliable, aCommandType, aPayload) {
+        this.isReliable = false;
+        this.cmd = 0;
+        this.aPayload = null;
+        this.seq = -1;
+        this.id = -1;
+        this.messageTime = -1;
+        
         // Info
         this.seq = aSequenceNumber;
         this.id = aClientid; 					// Server gives us one when we first  connect to it
@@ -48,31 +53,26 @@
         // State
         this.messageTime = -1;
         this.isReliable = isReliable;
+        
+         // This message MUST be sent if it is 'reliable' (Connect / Disconnect).
+        // If not it can be overwritten by newer messages (for example moving is unreliable, because once it's outdates its worthless if new information exist)
+        
     };
 
-    RealtimeMultiplayerGame.model.NetChannelMessage.prototype = {
-        // This message MUST be sent if it is 'reliable' (Connect / Disconnect).
-        // If not it can be overwritten by newer messages (for example moving is unreliable, because once it's outdates its worthless if new information exist)
-        isReliable: false,
-        cmd: 0,
-        aPayload: null,
-        seq: -1,
-        id: -1,
-        messageTime: -1,
-
-        /**
-         * Wrap the message with useful information before sending, optional BiSON or something can be used to compress the message
-         */
-        encodeSelf: function () {
-            if (this.id == -1) {
-                console.log("(Message) Sending message without clientid. Note this is ok, if it's the first message to the server.");
-            }
-
-            if (this.messageTime == -1) {
-                console.log("(Message) Sending message without messageTime. Expected result is undefined");
-            }
-
-            return {id: this.clientid, seq: this.sequenceNumber, cmds: this.unencodedMessage, t: this.messageTime}
+    /**
+     * Wrap the message with useful information before sending, optional BiSON or something can be used to compress the message
+     */
+    encodeSelf() {
+        if (this.id == -1) {
+            console.log("(Message) Sending message without clientid. Note this is ok, if it's the first message to the server.");
         }
+
+        if (this.messageTime == -1) {
+            console.log("(Message) Sending message without messageTime. Expected result is undefined");
+        }
+
+        return {id: this.clientid, seq: this.sequenceNumber, cmds: this.unencodedMessage, t: this.messageTime}
     }
-})()
+}
+
+module.exports = NetChannelMessage;

@@ -23,7 +23,7 @@ Basic Usage:
 //
 //	if (typeof indexOf !== 'function')
 //	{
-//		indexOf = function(value)
+//		indexOf(value)
 //		{
 //			for (var index = 0, length = this.length; index < length; index++)
 //			{
@@ -33,7 +33,7 @@ Basic Usage:
 //				}
 //			}
 //			return -1;
-//		};
+//		}
 //	}
 //
 //	function Set()
@@ -90,37 +90,34 @@ Basic Usage:
 //				i-=2;
 //			}
 //		}
-//	};
+//	}
 //
 //	return Set;
 //}());
 
-(function() {
-	/**
-	 *	LookupTable
-	 */
-	LookupTable = function()
+class LookupTable {
+	constructor()
 	{
 		this._keys = [];
-		this._data = {};
+		this._data = {}
 		this.nextUUID = 0;
-	};
+	}
 
 
-	LookupTable.prototype.setObjectForKey = function(value, key)
+	setObjectForKey(value, key)
 	{
 		if (!this._data.hasOwnProperty(key)) this._keys.push(key);
 		this._data[key] = value;
 
 		return value;
-	};
+	}
 
-	LookupTable.prototype.objectForKey = function(key)
+	objectForKey(key)
 	{
 		return this._data[key];
-	};
+	}
 
-	LookupTable.prototype.forEach = function(block, context)
+	forEach(block, context)
 	{
 		var keys = this._keys,
 			data = this._data,
@@ -132,32 +129,30 @@ Basic Usage:
 			key = keys[i];
 			block.call(context, key, data[key]);
 		}
-	};
+	}
 
-	LookupTable.prototype.count = function()
+	count()
 	{
 		return this._keys.length;
-	};
+	}
 
-	LookupTable.prototype.dealloc = function()
+	dealloc()
 	{
 		delete this._keys;
 		delete this._data;
-	};
+	}
+}
 
-
-
+class SortedLookupTable extends LookupTable {
 	/**
 	*	Sorted LookupTable,
 	*/
-	SortedLookupTable = function()
+	constructor()
 	{
-		LookupTable.call(this);
-	};
+		super();
+	}
 
-	SortedLookupTable.prototype = new LookupTable();
-
-	SortedLookupTable.prototype.setObjectForKey = function(value, key)
+	SortedsetObjectForKey(value, key)
 	{
 		if( !this._data.hasOwnProperty( key ) )
 		{
@@ -167,17 +162,17 @@ Basic Usage:
 		this._data[key] = value;
 
 		return value;
-	};
+	}
 
-	SortedLookupTable.prototype.remove = function(key)
+	Sortedremove(key)
 	{
 		if (!this._data.hasOwnProperty(key)) return;
 		delete this._data[key];
 		var index = this._indexOf(key);
 		this._keys.splice(index, 1);
-	};
+	}
 
-	SortedLookupTable.prototype._indexOf = function(key)
+	Sorted_indexOf(key)
 	{
 		var keys = this._keys,
 			n = keys.length,
@@ -194,7 +189,7 @@ Basic Usage:
 			if (key > keys[i - 1] && key < keys[i]) d = 0;
 		}
 		return i;
-	};
+	}
+}
 
-	return SortedLookupTable;
-})();
+module.exports = SortedLookupTable;

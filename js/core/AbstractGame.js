@@ -19,7 +19,7 @@
 	};
  */
 
-export default class AbstractGame {
+class AbstractGame {
 
     constructor() {
         this.setupNetChannel();
@@ -56,6 +56,7 @@ export default class AbstractGame {
      * setup the command mapping for the events recevied from netchannel
      */
     setupCmdMap() {
+        this.cmdMap = {};
     }
 
     // Methods
@@ -122,3 +123,5 @@ export default class AbstractGame {
         return this.gameTick;
     }
 }
+
+module.exports = AbstractGame;
