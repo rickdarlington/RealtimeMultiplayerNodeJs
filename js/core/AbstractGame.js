@@ -1,3 +1,4 @@
+var FieldController = require('../controller/FieldController');
 /**
  File:
  AbstractGame.js
@@ -24,22 +25,20 @@ class AbstractGame {
     constructor() {
         this.setupNetChannel();
         this.setupCmdMap();
-        this.fieldController = new RealtimeMultiplayerGame.Controller.FieldController();
 
         // Properties
-        this.gameClockReal = 0;											// Actual time via "new Date().getTime();"
-        this.gameClock = 0;											// Seconds since start
-        this.gameTick = 0;											// Ticks since start
+        this.gameClockReal = 0;						// Actual time via "new Date().getTime();"
+        this.gameClock = 0;							// Seconds since start
+        this.gameTick = 0;							// Ticks since start
         this.isRunning = true;
-        this.speedFactor = 1;											// Used to create Framerate Independent Motion (FRIM) - 1.0 means running at exactly the correct speed, 0.5 means half-framerate. (otherwise faster machines which can update themselves more accurately will have an advantage)
-        this.intervalGameTick = null;											// Setinterval for gametick
-        this.intervalFramerate = 60;											// Try to call our tick function this often, intervalFramerate, is used to determin how often to call settimeout - we can set to lower numbers for slower computers
-        this.intervalTargetDelta = NaN;	// this.targetDelta, milliseconds between frames. Normally it is 16ms or 60FPS. The framerate the game is designed against - used to create framerate independent motion
-        this.gameDuration = Number.MAX_VALUE;								// Gameduration
+        this.speedFactor = 1;   					// Used to create Framerate Independent Motion (FRIM) - 1.0 means running at exactly the correct speed, 0.5 means half-framerate. (otherwise faster machines which can update themselves more accurately will have an advantage)
+        this.intervalGameTick = null;				// Setinterval for gametick
+        this.intervalFramerate = 60;				// Try to call our tick function this often, intervalFramerate, is used to determin how often to call settimeout - we can set to lower numbers for slower computers
+        this.intervalTargetDelta = NaN;	            // this.targetDelta, milliseconds between frames. Normally it is 16ms or 60FPS. The framerate the game is designed against - used to create framerate independent motion
+        this.gameDuration = Number.MAX_VALUE;		// Gameduration
 
-        this.netChannel = null;											// ServerNetChannel / ClientNetChannel determined by subclass
-        this.fieldController = null;											// FieldController
-        this.cmdMap = {};
+        this.netChannel = null;						// ServerNetChannel / ClientNetChannel determined by subclass
+        this.fieldController = new FieldController();
 
         return this;
     };

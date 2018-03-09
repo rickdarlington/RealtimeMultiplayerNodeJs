@@ -53,3 +53,5 @@ class WorldEntityDescription {
         return fullDescriptionString;
     }
 }
+
+module.exports = WorldEntityDescription;

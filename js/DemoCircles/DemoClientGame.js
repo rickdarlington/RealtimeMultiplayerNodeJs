@@ -1,7 +1,7 @@
 var Constants = require('./DemoAppConstants');
 var CircleEntity = require('./CircleEntity');
 var DemoView = require('./DemoView');
-var AbstractClientGame = require ('../core/AbstractClientGame');
+var AbstractClientGame = require('../core/AbstractClientGame');
 
 /**
  File:
@@ -20,10 +20,11 @@ var AbstractClientGame = require ('../core/AbstractClientGame');
  1.0
  */
 
-export default class DemoClientGame extends AbstractClientGame {
+class DemoClientGame extends AbstractClientGame {
 
     constructor() {
         super();
+        this.setupView();
         this.startGameClock();
         return this;
     };
@@ -130,3 +131,5 @@ export default class DemoClientGame extends AbstractClientGame {
     }
 
 }
+
+module.exports = DemoClientGame;

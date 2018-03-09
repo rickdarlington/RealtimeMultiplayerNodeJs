@@ -134,3 +134,5 @@ class CircleEntity extends GameEntity {
         return this.originalColor
     }
 }
+
+module.exports = CircleEntity;

@@ -1,4 +1,6 @@
 var AbstractGame = require('../core/AbstractGame');
+var ClientNetChannel = require('../network/ClientNetChannel');
+var Constants = require('../model/Constants');
 
 /**
  File:
@@ -20,11 +22,12 @@ var AbstractGame = require('../core/AbstractGame');
 		RealtimeMultiplayerGame.extend(MyGameClass, RealtimeMultiplayerGame.AbstractGame, null);
 	};
  */
-export default class AbstractClientGame extends AbstractGame {
+class AbstractClientGame extends AbstractGame {
 
     constructor() {
         super();
         this.setupView();
+        this.setupNetChannel();
         this.view = null;							// View
         this.clientCharacter = null;				// Reference to this users character
         this.nickname = '';							// User 'nickname'
@@ -49,8 +52,8 @@ export default class AbstractClientGame extends AbstractGame {
      * @inheritDoc
      */
     setupNetChannel() {
-        super.setupNetChannel();
-        this.netChannel = new RealtimeMultiplayerGame.ClientNetChannel(this);
+        super.setupNetChannel(); //is a no-op.  WTF is with all these super no-ops?
+        this.netChannel = new ClientNetChannel(this);
     }
 
     /**
@@ -74,11 +77,11 @@ export default class AbstractClientGame extends AbstractGame {
         // Continuously queue information about our input - which will be sent to the server by netchannel
         if (this.clientCharacter != null) {
             var input = this.clientCharacter.constructEntityDescription();
-            this.netChannel.addMessageToQueue(false, RealtimeMultiplayerGame.Constants.CMDS.PLAYER_UPDATE, input);
+            this.netChannel.addMessageToQueue(false, Constants.CMDS.PLAYER_UPDATE, input);
         }
 
         // Draw the gameworld
-        this.renderAtTime(this.gameClock - RealtimeMultiplayerGame.Constants.CLIENT_SETTING.INTERP - RealtimeMultiplayerGame.Constants.CLIENT_SETTING.FAKE_LAG);
+        this.renderAtTime(this.gameClock - Constants.CLIENT_SETTING.INTERP - Constants.CLIENT_SETTING.FAKE_LAG);
         this.netChannel.tick();
     }
 
@@ -120,7 +123,7 @@ export default class AbstractClientGame extends AbstractGame {
 
             // Have no found a matching update for a while - the client is way behind the server, set our time to the time of the last udpate we received
 //				if(i === len -1) {
-//					if(++this.locateUpdateFailedCount === RealtimeMultiplayerGame.Constants.CLIENT_SETTING.MAX_UPDATE_FAILURE_COUNT) {
+//					if(++this.locateUpdateFailedCount === Constants.CLIENT_SETTING.MAX_UPDATE_FAILURE_COUNT) {
 //						this.gameClock = currentWED.gameClock;
 //						this.gameTick = currentWED.gameTick;
 //						previousWED = cmdBuffer[i-1];
@@ -210,7 +213,7 @@ export default class AbstractClientGame extends AbstractGame {
 
 
         // Destroy removed entities, every N frames
-        if (this.gameTick % RealtimeMultiplayerGame.Constants.CLIENT_SETTING.EXPIRED_ENTITY_CHECK_RATE === 0)
+        if (this.gameTick % Constants.CLIENT_SETTING.EXPIRED_ENTITY_CHECK_RATE === 0)
             this.fieldController.removeExpiredEntities(activeEntities);
     }
 
@@ -268,7 +271,7 @@ export default class AbstractClientGame extends AbstractGame {
     joinGame(aNickname) {
         this.nickname = aNickname;
         // Create a 'join' message and queue it in ClientNetChannel
-        this.netChannel.addMessageToQueue(true, RealtimeMultiplayerGame.Constants.CMDS.PLAYER_JOINED, {nickname: this.nickname});
+        this.netChannel.addMessageToQueue(true, Constants.CMDS.PLAYER_JOINED, {nickname: this.nickname});
     }
 
 
@@ -308,3 +311,5 @@ export default class AbstractClientGame extends AbstractGame {
         super.dealloc();
     }
 }
+
+module.exports = AbstractClientGame;

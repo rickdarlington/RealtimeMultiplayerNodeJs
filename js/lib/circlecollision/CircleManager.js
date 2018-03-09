@@ -15,24 +15,24 @@
 	http://onedayitwillmake.com/CirclePackJS/
 */
 var Point = require('../../model/Point');
+
 class CircleManager {
-	
+
     /**
      * @constructor
      */
 	constructor()
 	{
+        this.BOUNDARY_WRAP_X 			 = 1 << 0;
+        this.BOUNDARY_WRAP_Y 			 = 1 << 1;
+        this.BOUNDARY_CONSTRAIN_X 		 = 1 << 2;
+        this.BOUNDARY_CONSTRAIN_Y 		 = 1 << 3;
+
 		this.allCircles =				[];						// An array containing all the circles in this CircleManager
 		this.numberOfCollisionPasses =	1;						// Number of times to run the collision check, higher is more accurate with less overlapping but slower
 		this.numberOfTargetingPasses =	0;						// Number of times to move a circle towards its target
 		this.bounds =					{};						// Object containing x,y,width,height
 		this.collisionCallback =		null;					// An object containing a scope and a function block
-
-		// These can be passed to the handleBoundaryForCircle function
-		this.BOUNDARY_WRAP_X 			 = 1 << 0;
-		this.BOUNDARY_WRAP_Y 			 = 1 << 1;
-		this.BOUNDARY_CONSTRAIN_X 		 = 1 << 2;
-		this.BOUNDARY_CONSTRAIN_Y 		 = 1 << 3;
 		this.allCircles = [];
 		return this;
 	}
@@ -229,10 +229,10 @@ class CircleManager {
 
 		// Toggle these on and off,
 		// Wrap and bounce, are opposite behaviors so pick one or the other for each axis, or bad things will happen.
-		var wrapXMask = RealtimeMultiplayerGame.modules.circlecollision.CircleManager.prototype.BOUNDARY_WRAP_X;
-		var wrapYMask = RealtimeMultiplayerGame.modules.circlecollision.CircleManager.prototype.BOUNDARY_WRAP_Y;
-		var constrainXMask = RealtimeMultiplayerGame.modules.circlecollision.CircleManager.prototype.BOUNDARY_CONSTRAIN_X;
-		var constrainYMask = RealtimeMultiplayerGame.modules.circlecollision.CircleManager.prototype.BOUNDARY_CONSTRAIN_Y;
+		var wrapXMask = this.BOUNDARY_WRAP_X;
+		var wrapYMask = this.BOUNDARY_WRAP_Y;
+		var constrainXMask = this.BOUNDARY_CONSTRAIN_X;
+		var constrainYMask = this.BOUNDARY_CONSTRAIN_Y;
 
 		// Convert to bitmask - Uncomment the one you want, or concact your own :)
 //			boundsRule = wrapXMask | wrapYMask;  // Wrap Y axis, but constrain horizontally
@@ -341,6 +341,6 @@ class CircleManager {
 				this.allCircles.splice(k, 1);
 		}
 	}
-};
+}
 
 module.exports = CircleManager;

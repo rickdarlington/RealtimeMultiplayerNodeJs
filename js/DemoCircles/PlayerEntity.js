@@ -1,4 +1,5 @@
 var Constants = require('./DemoAppConstants');
+var CircleEntity = require('./CircleEntity');
 /**
  File:
  DemoApp.CircleEntity
@@ -13,62 +14,56 @@ var Constants = require('./DemoAppConstants');
  Version:
  1.0
  */
-(function () {
-
-    DemoApp.PlayerEntity = function (anEntityid, aClientid) {
-        DemoApp.PlayerEntity.superclass.constructor.call(this, anEntityid, aClientid);
-
+class PlayerEntity extends CircleEntity{
+    constructor(anEntityid, aClientid) {
+        super(anEntityid, aClientid);
+        this.entityType = Constants.PLAYER_ENTITY;
+        this.input = null;
+        this.radius = 40;
         return this;
     };
 
-    DemoApp.PlayerEntity.prototype = {
-        entityType: Constants.PLAYER_ENTITY,
-        input: null,
-        radius: 40,
+    updateView() {
+        super.updateView();
+    }
 
-        updateView: function () {
-            DemoApp.PlayerEntity.superclass.updateView.call(this);
-        },
+    setInput(input) {
+        this.input = input;
+    }
 
-        setInput: function (input) {
-            this.input = input;
-        },
+    updatePosition() {
+        var moveSpeed = 1.5;
+        // Horizontal accelertheation
+        if (this.input.isLeft()) this.acceleration.x -= moveSpeed;
+        if (this.input.isRight()) this.acceleration.x += moveSpeed;
 
-        updatePosition: function () {
-            var moveSpeed = 1.5;
-            // Horizontal accelertheation
-            if (this.input.isLeft()) this.acceleration.x -= moveSpeed;
-            if (this.input.isRight()) this.acceleration.x += moveSpeed;
+        // Vertical movement
+        if (this.input.isUp()) this.acceleration.y -= moveSpeed;
+        if (this.input.isDown()) this.acceleration.y += moveSpeed;
 
-            // Vertical movement
-            if (this.input.isUp()) this.acceleration.y -= moveSpeed;
-            if (this.input.isDown()) this.acceleration.y += moveSpeed;
+        this.velocity.translatePoint(this.acceleration);
+        this.velocity.limit(5);
+        this.velocity.multiply(0.85);
+        this.acceleration.set(0, 0);
+        this.collisionCircle.position.translatePoint(this.velocity);
+        this.position = this.collisionCircle.position.clone();
+    }
 
-            this.velocity.translatePoint(this.acceleration);
-            this.velocity.limit(5);
-            this.velocity.multiply(0.85);
-            this.acceleration.set(0, 0);
-            this.collisionCircle.position.translatePoint(this.velocity);
-            this.position = this.collisionCircle.position.clone();
-        },
+    setCollisionCircle(aCollisionCircle) {
+        super.setCollisionCircle(aCollisionCircle);
+        //	this.collisionCircle.setIsFixed( true );
+    }
 
-        setCollisionCircle: function (aCollisionCircle) {
-            DemoApp.PlayerEntity.superclass.setCollisionCircle.call(this, aCollisionCircle);
-            //	this.collisionCircle.setIsFixed( true );
-        },
-
-        /**
-         * Deallocate memory
-         */
-        dealloc: function () {
-            if (this.input) {
-                this.input.dealloc();
-                delete this.input;
-            }
-            DemoApp.CircleEntity.superclass.dealloc.call(this);
+    /**
+     * Deallocate memory
+     */
+    dealloc() {
+        if (this.input) {
+            this.input.dealloc();
+            delete this.input;
         }
-    };
+        super.dealloc();
+    }
+}
 
-    // extend RealtimeMultiplayerGame.model.GameEntity
-    RealtimeMultiplayerGame.extend(DemoApp.PlayerEntity, DemoApp.CircleEntity, null);
-})();
+module.exports = PlayerEntity;

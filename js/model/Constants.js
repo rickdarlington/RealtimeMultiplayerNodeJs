@@ -25,9 +25,9 @@ module.exports = {
 
         /** @return {string} */
         GET_URI: function () {
-            return  this.SERVER_SETTING.SOCKET_PROTOCOL
-                + "://" + this.SERVER_SETTING.SOCKET_DOMAIN
-                + ":" + this.SERVER_SETTING.SOCKET_PORT;
+            return  this.SOCKET_PROTOCOL
+                + "://" + this.SOCKET_DOMAIN
+                + ":" + this.SOCKET_PORT;
         }
     },
 

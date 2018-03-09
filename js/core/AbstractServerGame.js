@@ -22,7 +22,7 @@ var ServerNetChannel = require('../network/ServerNetChannel');
 		RealtimeMultiplayerGame.extend(MyGameClass, RealtimeMultiplayerGame.AbstractServerGame, null);
 	};
  */
-var cmdMap = {};        				// Map the CMD constants to functions
+var cmdMap = [];        				// Map the CMD constants to functions
 var nextEntityID = 0;					// Incremented for everytime a new object is created}
     
 class AbstractServerGame extends AbstractGame {
@@ -30,15 +30,11 @@ class AbstractServerGame extends AbstractGame {
     constructor() {
         super();
         this.intervalFramerate += 6;
-        this.cmdMap = {};
+        this.cmdMap = [];
+        this.netChannel = new ServerNetChannel(this);
         return this;
     }
 
-
-        // Methods
-        setupNetChannel() {
-            this.netChannel = new ServerNetChannel(this);
-        }
 
         /**
          * Map RealtimeMultiplayerGame.Constants.CMDS to functions
@@ -66,8 +62,7 @@ class AbstractServerGame extends AbstractGame {
             }, this);
 
             // Create a new world-entity-description,
-            var worldEntityDescription = new WorldEntityDescription(this, this.fieldController.getEntities());
-            this.netChannel.tick(this.gameClock, worldEntityDescription);
+            this.netChannel.tick(this.gameClock, new WorldEntityDescription(this, this.fieldController.getEntities()));
 
             if (this.gameClock > this.gameDuration) {
                 this.shouldEndGame();

@@ -2,6 +2,9 @@ var Constants = require('../model/Constants');
 var Noise = require("../model/ImprovedNoise.js");
 var AbstractServerGame = require('../core/AbstractServerGame')
 var CircleManager = require('../lib/circlecollision/CircleManager');
+var Circle = require('../lib/circlecollision/Circle');
+var PlayerEntity = require('../DemoCircles/PlayerEntity');
+var Keyboard = require('../input/Keyboard');
 /**
  File:
  DemoServerGame
@@ -37,6 +40,7 @@ class DemoServerGame extends AbstractServerGame {
      * If it is set, it will call that CMD on its delegate
      */
     setupCmdMap() {
+        this.cmdMap = [];
         this.cmdMap[Constants.CMDS.PLAYER_UPDATE] = this.shouldUpdatePlayer;
     }
 
@@ -77,7 +81,7 @@ class DemoServerGame extends AbstractServerGame {
      */
     createCircleEntity(aRadius, anEntityid, aClientid) {
         // Create a randomly sized circle, that will represent this entity in the collision manager
-        var collisionCircle = new RealtimeMultiplayerGame.modules.circlecollision.PackedCircle();
+        var collisionCircle = new CircleManager();
         collisionCircle.setRadius(aRadius);
 
         // Create the GameEntity
@@ -96,13 +100,13 @@ class DemoServerGame extends AbstractServerGame {
 
     createPlayerEntity(anEntityid, aClientid) {
         // Create the GameEntity
-        var playerEntity = new DemoApp.PlayerEntity(anEntityid, aClientid);
+        var playerEntity = new PlayerEntity(anEntityid, aClientid);
         playerEntity.position.set(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
 
-        var collisionCircle = new RealtimeMultiplayerGame.modules.circlecollision.PackedCircle();
+        var collisionCircle = new Circle();
         collisionCircle.setRadius(playerEntity.radius);
 
-        playerEntity.setInput(new RealtimeMultiplayerGame.Input.Keyboard());
+        playerEntity.setInput(new Keyboard());
         playerEntity.setCollisionCircle(collisionCircle);
 
         // place player on field
@@ -118,8 +122,8 @@ class DemoServerGame extends AbstractServerGame {
      */
     tick() {
         // Use both the BOUNDARY_WRAP_X flag, and the BOUNDARY_CONSTRAIN_Y flags as the rule
-        var boundsRule = RealtimeMultiplayerGame.modules.circlecollision.CircleManager.prototype.BOUNDARY_WRAP_X;
-        boundsRule |= RealtimeMultiplayerGame.modules.circlecollision.CircleManager.prototype.BOUNDARY_CONSTRAIN_Y;
+        var boundsRule = CircleManager.BOUNDARY_WRAP_X;
+        boundsRule |= CircleManager.BOUNDARY_CONSTRAIN_Y;
 
         this.collisionManager.handleBoundaryForAllCircles(boundsRule);
         this.collisionManager.handleCollisions();

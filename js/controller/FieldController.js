@@ -1,9 +1,8 @@
+var SortedLookupTable = require('../lib/SortedLookupTable');
+
 class FieldController {
     
     constructor() {
-        entities = null;					// A SortedLookupTable for all entities
-        players = null;					// A SortedLookupTable for players only, stored using client.getClientid()
-    
         this.entities = new SortedLookupTable();
         this.players = new SortedLookupTable();
     };
@@ -145,15 +144,6 @@ class FieldController {
 ///// Accessors
     // Will be called on client side
     setView (aView) {
-        var theInterface = RealtimeMultiplayerGame.Controller.FieldControllerViewProtocol;
-        for (var member in theInterface) {
-            if ((typeof aView[member] != typeof theInterface[member])) {
-                console.log("object failed to implement interface member " + member);
-                return false;
-            }
-        }
-
-        // Checks passed
         this.view = aView;
     }
     getView () {
@@ -173,14 +163,5 @@ class FieldController {
     }
 };
 
-// /**
-//  * Required methods for the FieldControllerView delegate
-//  */
-// RealtimeMultiplayerGame.Controller.FieldControllerViewProtocol = {
-//     addEntity (anEntityView) {
-//     }
-//     dealloc () {
-//     }
-// }
 
 module.exports = FieldController;

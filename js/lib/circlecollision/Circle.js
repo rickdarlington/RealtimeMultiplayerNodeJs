@@ -1,3 +1,4 @@
+var Point = require('../../model/Point');
 /**
 	  ####  #####  ##### ####    ###  #   # ###### ###### ##     ##  #####  #     #      ########    ##    #  #  #####
 	 #   # #   #  ###   #   #  #####  ###    ##     ##   ##  #  ##    #    #     #     #   ##   #  #####  ###   ###
@@ -23,30 +24,30 @@ class Circle {
      */
 	constructor() {
 	
-		this.boundsRule = RealtimeMultiplayerGame.modules.circlecollision.PackedCircle.BOUNDS_RULE_IGNORE;
-		this.position = new RealtimeMultiplayerGame.model.Point(0,0);
-		this.offset = new RealtimeMultiplayerGame.model.Point(0,0);
-		this.targetPosition = new RealtimeMultiplayerGame.model.Point(0,0);
+		this.boundsRule = 8;
+		this.position = new Point(0,0);
+		this.offset = new Point(0,0);
+		this.targetPosition = new Point(0,0);
 		
-		this.id = 			0;
-		this.delegate =		null;
-		this.position =		new RealtimeMultiplayerGame.model.Point(0,0);
-		this.offset =			new RealtimeMultiplayerGame.model.Point(0,0);	// Offset from delegates position by this much
+		this.id = 			    0;
+		this.delegate =		    null;
+		this.position =		    new Point(0,0);
+		this.offset =			new Point(0,0);	// Offset from delegates position by this much
 	   	this.radius =			0;
 		this.radiusSquared =	0;
 
 		this.targetPosition =	null;	// Where it wants to go
 		this.targetChaseSpeed = 0.02;
 
-		this.isFixed =		false;
+		this.isFixed =		    false;
 		this.boundsRule =		0;
 		this.collisionMask =	0;
 		this.collisionGroup =	0;
 
-		this.BOUNDS_RULE_WRAP =		1;      // Wrap to otherside
-		this.BOUNDS_RULE_CONSTRAINT =	2;      // Constrain within bounds
-		this.BOUNDS_RULE_DESTROY =	4;      // Destroy when it reaches the edge
-		this.BOUNDS_RULE_IGNORE =		8;		// Ignore when reaching bounds
+		this.BOUNDS_RULE_WRAP =		  1;      // Wrap to otherside
+		this.BOUNDS_RULE_CONSTRAINT = 2;      // Constrain within bounds
+		this.BOUNDS_RULE_DESTROY =	  4;      // Destroy when it reaches the edge
+		this.BOUNDS_RULE_IGNORE =	  8;		// Ignore when reaching bounds
 		
 		return this;
 	}

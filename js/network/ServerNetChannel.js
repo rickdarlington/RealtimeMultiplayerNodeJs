@@ -25,17 +25,13 @@ class ServerNetChannel {
      * @param {RealtimeMultiplayerGame.network.ServerNetChannelDelegateProtocol} aDelegate A delegate that conforms to RealtimeMultiplayerGame.network.ServerNetChannelDelegateProtocol
      */
     constructor(aDelegate) {
-        this.socketio = null;					// Socket.IO server
-        this.clients = null;					// SortedLookupTable
-        this.delegate = null;					// Should conform to ServerNetChannel delegate
-        this.outgoingSequenceNumber = 0;					// A unique ID for each message
-        this.cmdMap = {};					// Map the CMD constants to functions
-        var nextClientID = Constants.SERVER_SETTING.CLIENT_ID;
+        this.outgoingSequenceNumber = 0;		// A unique ID for each message
+        this.cmdMap = [];					    // Map the CMD constants to functions
+        this.nextClientID = Constants.SERVER_SETTING.CLIENT_ID;
         this.clients = new SortedLookupTable();
 
         this.setDelegate(aDelegate);
         this.setupSocketIO();
-//		this.setupWSServer();
         this.setupCmdMap();
         return this;
     };

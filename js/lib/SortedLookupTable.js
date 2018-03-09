@@ -152,7 +152,7 @@ class SortedLookupTable extends LookupTable {
 		super();
 	}
 
-	SortedsetObjectForKey(value, key)
+	setObjectForKey(value, key)
 	{
 		if( !this._data.hasOwnProperty( key ) )
 		{
@@ -164,7 +164,7 @@ class SortedLookupTable extends LookupTable {
 		return value;
 	}
 
-	Sortedremove(key)
+	remove(key)
 	{
 		if (!this._data.hasOwnProperty(key)) return;
 		delete this._data[key];
@@ -172,7 +172,7 @@ class SortedLookupTable extends LookupTable {
 		this._keys.splice(index, 1);
 	}
 
-	Sorted_indexOf(key)
+	indexOf(key)
 	{
 		var keys = this._keys,
 			n = keys.length,

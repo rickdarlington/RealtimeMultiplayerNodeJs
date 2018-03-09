@@ -22,13 +22,10 @@ var Constants = require('./DemoAppConstants');
  Version:
  1.0
  */
-export default class DemoView {
+class DemoView {
     constructor() {
         this.setupCAAT();
         this.setupStats();
-        this.caatDirector = null;				// CAAT Director instance
-        this.caatScene = null;				// CAAT Scene instance
-        this.stats = null;				// Stats.js instance
     };
 
 
@@ -91,4 +88,4 @@ export default class DemoView {
     }
 }
 
-
+module.exports = DemoView;

@@ -1,3 +1,3 @@
-- split files into client, server, shared
 - update server and shared to use require('')
+- split files into client, server, shared
 - update client to use import

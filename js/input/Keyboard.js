@@ -116,3 +116,5 @@ class Keyboard {
         return this.keys['tab'];
     }
 }
+
+module.exports = Keyboard;

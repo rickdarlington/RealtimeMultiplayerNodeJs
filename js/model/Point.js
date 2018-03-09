@@ -33,7 +33,7 @@ class Point {
      * @return {RealtimeMultiplayerGame.model.Point}
      */
     clone() {
-        var p = new RealtimeMultiplayerGame.model.Point();
+        var p = new Point();
         p.set(this.x, this.y);
         return p;
     }
