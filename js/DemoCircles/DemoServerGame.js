@@ -22,6 +22,7 @@ class DemoServerGame extends AbstractServerGame {
 
     constructor() {
         super();
+        this.cmdMap = [];
         this.collisionManager = null;
         this.setGameDuration(Constants.GAME_DURATION);
         this.setupCollisionManager();
