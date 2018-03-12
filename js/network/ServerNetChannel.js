@@ -26,7 +26,7 @@ class ServerNetChannel {
      */
     constructor(aDelegate) {
         this.outgoingSequenceNumber = 0;		// A unique ID for each message
-        this.cmdMap = [];					    // Map the CMD constants to functions
+        this.cmdMap = {};
         this.nextClientID = Constants.SERVER_SETTING.CLIENT_ID;
         this.clients = new SortedLookupTable();
 
@@ -86,7 +86,10 @@ class ServerNetChannel {
             // Send the first message back to the client, which gives them a clientid
             var connectMessage = new NetChannelMessage(++this.outgoingSequenceNumber, aClient.getClientid(), true, Constants.CMDS.SERVER_CONNECT, { gameClock: that.delegate.getGameClock() });
             connectMessage.messageTime = that.delegate.getGameClock();
-            aClient.getConnection().json.send(RealtimeMultiplayerGame.modules.bison.encode(connectMessage));
+            
+            console.log("sending to connecting client: ");
+            console.log(connectMessage);
+            aClient.getConnection().json.send(connectMessage);
 
             // Add to our list of connected users
             that.clients.setObjectForKey(aClient, aClient.getSessionId());
@@ -116,10 +119,10 @@ class ServerNetChannel {
      * Map RealtimeMultiplayerGame.Constants.CMDS to functions
      */
     setupCmdMap () {
-        this.cmdMap = {};
         this.cmdMap[Constants.CMDS.PLAYER_JOINED] = this.onPlayerJoined;
+        this.cmdMap[Constants.CMDS.SERVER_FULL_UPDATE] = this.onUpdateRequest;
     }
-
+    
     /**
      * Checks all the clients to see if its ready for a new message.
      * If they are, have the client perform delta-compression on the worldDescription and send it off.
@@ -205,7 +208,7 @@ class ServerNetChannel {
         } else if (this.delegate.cmdMap[data.cmd]) { // See if delegate has function mapped
             this.delegate.cmdMap[data.cmd].call(this.delegate, client, data);
         } else { // Display error
-            console.log("(NetChannel)::onSocketMessage could not map '" + data.cmd + "' to function!");
+            console.log("(NetChannel)::onSocketMessage SERVER could not map '" + data.cmd + "' to function!");
         }
     }
 
@@ -219,8 +222,13 @@ class ServerNetChannel {
      */
     onPlayerJoined (client, data) {
         console.log(client.getClientid() + " joined the game!");
+        console.log(client);
         this.delegate.shouldAddPlayer(client.getClientid(), data);
         client.getConnection().json.send(data);
+    }
+    
+    onUpdateRequest(client, data) { 
+           
     }
 
     /*************

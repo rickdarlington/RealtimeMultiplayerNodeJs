@@ -42,14 +42,14 @@ module.exports = {
     },
 
     CMDS: {
-        SERVER_CONNECT: 1 << 1,			// Dispatched by the server if it acknowledges a client connection
-        SERVER_MATCH_START: 1 << 2,			// Server broadcast game start
-        SERVER_END_GAME: 1 << 3,			// Server broadcast game over
-        PLAYER_CONNECT: 1 << 4,			// Initial connection to the server, not in game yet
-        PLAYER_JOINED: 1 << 5,           // Player has joined the current game
-        PLAYER_DISCONNECT: 1 << 6,           // Player has disconnected
-        PLAYER_UPDATE: 1 << 7,			// Player is sending sampled input
-        SERVER_FULL_UPDATE: 1 << 8			// Player is sending sampled input
+        SERVER_CONNECT: 1,			// Dispatched by the server if it acknowledges a client connection
+        SERVER_MATCH_START: 2,			// Server broadcast game start
+        SERVER_END_GAME: 3,			// Server broadcast game over
+        PLAYER_CONNECT: 4,			// Initial connection to the server, not in game yet
+        PLAYER_JOINED: 5,           // Player has joined the current game
+        PLAYER_DISCONNECT: 6,           // Player has disconnected
+        PLAYER_UPDATE: 7,			// Player is sending sampled input
+        SERVER_FULL_UPDATE: 8			// Player is sending sampled input
     },
 
     // The client sends this bitmask to the server

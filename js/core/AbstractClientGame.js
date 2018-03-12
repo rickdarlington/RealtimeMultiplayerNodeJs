@@ -272,7 +272,7 @@ class AbstractClientGame extends AbstractGame {
     joinGame(aNickname) {
         this.nickname = aNickname;
         // Create a 'join' message and queue it in ClientNetChannel
-        this.netChannel.addMessageToQueue(true, Constants.CMDS.PLAYER_JOINED, {nickname: this.nickname});
+        this.netChannel.addMessageToQueue(true, Constants.CMDS.PLAYER_JOINED, {nickname: "rickd"});
     }
 
 

@@ -226,7 +226,8 @@ class CircleManager {
 			throw "No Boundary rule defined!";
 		}
 		if(!aCircle.position) {
-			console.log(aCircle.entityId + " can't bounds check");
+			//TODO WTF MAN?
+			//console.log(aCircle.entityId + " can't bounds check");
 			return;
 		}
 		var xpos = aCircle.position.x;

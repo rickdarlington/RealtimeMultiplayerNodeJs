@@ -31,7 +31,9 @@ class ClientNetChannel {
         this.delegate = null;			        // Object informed when ClientNetChannel does interesting stuff
         this.socketio = null;				    // Reference to singluar Socket.IO instance
         this.clientid = null;				    // A client id is set by the server on first connect
-
+    
+        this.cmdMap = {};
+        
         // Settings
         this.cl_updateRate = Constants.CLIENT_SETTING.CMD_RATE,		// How often we can receive messages per sec
 
@@ -75,7 +77,9 @@ class ClientNetChannel {
      * Map RealtimeMultiplayerGame.Constants.CMDS to functions
      */
     setupCmdMap() {
-        this.cmdMap = {};
+        console.log("mapping cmds");
+        console.log(Constants.CMDS);
+        console.log(Constants.CMDS.SERVER_FULL_UPDATE);
         this.cmdMap[Constants.CMDS.SERVER_FULL_UPDATE] = this.onServerWorldUpdate;
     }
 
@@ -139,10 +143,13 @@ class ClientNetChannel {
         }
 
         // Call the mapped function
-        if (this.cmdMap[aNetChannelMessage.cmd])
-            this.cmdMap[aNetChannelMessage.cmd].call(this, aNetChannelMessage);
-        else
-            console.log("(NetChannel)::onSocketMessage could not map '" + aNetChannelMessage.cmd + "' to function!");
+        if (this.cmdMap[aNetChannelMessage.cmd]) {
+          this.cmdMap[aNetChannelMessage.cmd].call(this, aNetChannelMessage);
+        } else {
+          console.log("(NetChannel)::onSocketMessage CLIENT could not map '" + aNetChannelMessage.cmd + "' to function!");
+          console.log("map contains");
+          console.log(this.cmdMap);
+        }
     }
 
     onSocketDisconnect() {

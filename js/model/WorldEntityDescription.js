@@ -52,7 +52,8 @@ class WorldEntityDescription {
                 fullDescriptionString += "|" + entityDescriptionString;
             }
             else {
-                console.log("broken entity");
+                //TODO WTF MAN?
+                //console.log("broken entity");
             }
         }, this);
 

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -646,14 +646,14 @@ module.exports = {
     },
 
     CMDS: {
-        SERVER_CONNECT: 1 << 1, // Dispatched by the server if it acknowledges a client connection
-        SERVER_MATCH_START: 1 << 2, // Server broadcast game start
-        SERVER_END_GAME: 1 << 3, // Server broadcast game over
-        PLAYER_CONNECT: 1 << 4, // Initial connection to the server, not in game yet
-        PLAYER_JOINED: 1 << 5, // Player has joined the current game
-        PLAYER_DISCONNECT: 1 << 6, // Player has disconnected
-        PLAYER_UPDATE: 1 << 7, // Player is sending sampled input
-        SERVER_FULL_UPDATE: 1 << 8 // Player is sending sampled input
+        SERVER_CONNECT: 1, // Dispatched by the server if it acknowledges a client connection
+        SERVER_MATCH_START: 2, // Server broadcast game start
+        SERVER_END_GAME: 3, // Server broadcast game over
+        PLAYER_CONNECT: 4, // Initial connection to the server, not in game yet
+        PLAYER_JOINED: 5, // Player has joined the current game
+        PLAYER_DISCONNECT: 6, // Player has disconnected
+        PLAYER_UPDATE: 7, // Player is sending sampled input
+        SERVER_FULL_UPDATE: 8 // Player is sending sampled input
     },
 
     // The client sends this bitmask to the server
@@ -671,206 +671,6 @@ module.exports = {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var DemoClientGame = __webpack_require__(5);
-
-(function () {
-    var onDocumentReady = function onDocumentReady() {
-        var clientGame = new DemoClientGame();
-    };
-
-    window.addEventListener('load', onDocumentReady, false);
-})();
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/* global CAAT */
-var Constants = __webpack_require__(0);
-var CircleEntity = __webpack_require__(6);
-var DemoView = __webpack_require__(9);
-var AbstractClientGame = __webpack_require__(10);
-var PlayerEntity = __webpack_require__(15);
-var KeyboardInputTrait = __webpack_require__(16);
-
-/**
- File:
- DemoServerGame
- Created By:
- Mario Gonzalez
- Project:
- DemoApp
- Abstract:
- This is a concrete server instance of our game
- Basic Usage:
- DemoServerGame = new DemoApp.DemoServerGame();
- DemoServerGame.start();
- DemoServerGame.explodeEveryone();
- Version:
- 1.0
- */
-
-var DemoClientGame = function (_AbstractClientGame) {
-    _inherits(DemoClientGame, _AbstractClientGame);
-
-    function DemoClientGame() {
-        var _ret;
-
-        _classCallCheck(this, DemoClientGame);
-
-        var _this = _possibleConstructorReturn(this, (DemoClientGame.__proto__ || Object.getPrototypeOf(DemoClientGame)).call(this));
-
-        _this.setupView();
-        _this.startGameClock();
-        return _ret = _this, _possibleConstructorReturn(_this, _ret);
-    }
-
-    _createClass(DemoClientGame, [{
-        key: 'setupView',
-        value: function setupView() {
-            this.view = new DemoView();
-            this.view.insertIntoHTMLElementWithId("gamecontainer");
-
-            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'setupView', this).call(this, this);
-        }
-    }, {
-        key: 'tick',
-
-
-        /**
-         * @inheritDoc
-         */
-        value: function tick() {
-            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'tick', this).call(this);
-            this.view.stats.update();
-            this.view.update(this.gameClockReal);
-        }
-    }, {
-        key: 'createEntityFromDesc',
-
-
-        /**
-         * @inheritDoc
-         */
-        value: function createEntityFromDesc(entityDesc) {
-
-            var diameter = entityDesc.radius * 2;
-
-            // Create a view via CAAT
-            var aCircleView = new CAAT.ShapeActor();
-            aCircleView.create();
-            aCircleView.setSize(diameter, diameter);
-            aCircleView.setFillStyle("#" + CAAT.Color.prototype.hsvToRgb(entityDesc.entityid * 15 % 360, 40, 99).toHex()); // Random color
-            aCircleView.setLocation(entityDesc.x, entityDesc.y); // Place in the center of the screen, use the director's width/height
-
-            var newEntity = null;
-
-            var isOwnedByMe = entityDesc.clientid == this.netChannel.clientid;
-            // If this is a player entity
-            if (entityDesc.entityType & Constants.ENTITY_TYPES.PLAYER_ENTITY) {
-                newEntity = new PlayerEntity(entityDesc.entityid, entityDesc.clientid);
-
-                // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
-                if (isOwnedByMe) {
-                    newEntity.addTraitAndExecute(new KeyboardInputTrait());
-                    this.clientCharacter = newEntity;
-                }
-            } else {
-                newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
-            }
-
-            newEntity.getPosition().setPos(entityDesc.x, entityDesc.y);
-            newEntity.setView(aCircleView);
-
-            this.fieldController.addEntity(newEntity);
-        }
-    }, {
-        key: 'parseEntityDescriptionArray',
-
-
-        /**
-         * Called by the ClientNetChannel, it sends us an array containing tightly packed values and expects us to return a meaningful object
-         * It is left up to each game to implement this function because only the game knows what it needs to send.
-         * However the 4 example projects in RealtimeMultiplayerNodeJS offer should be used ans examples
-         *
-         * @param {Array} entityDescAsArray An array of tightly packed values
-         * @return {Object} An object which will be returned to you later on tied to a specific entity
-         */
-        value: function parseEntityDescriptionArray(entityDescAsArray) {
-            var entityDescription = {};
-
-            // It is left upto each game to implement this function because only the game knows what it needs to send.
-            // However the 4 example projects in RealtimeMultiplayerNodeJS offer this an example
-            entityDescription.entityid = entityDescAsArray[0];
-            entityDescription.clientid = entityDescAsArray[1];
-            entityDescription.entityType = +entityDescAsArray[2];
-            entityDescription.x = +entityDescAsArray[3];
-            entityDescription.y = +entityDescAsArray[4];
-            entityDescription.radius = +entityDescAsArray[5];
-            entityDescription.color = entityDescAsArray[6];
-            return entityDescription;
-        }
-    }, {
-        key: 'netChannelDidConnect',
-
-
-        /**
-         * @inheritDoc
-         */
-        value: function netChannelDidConnect(messageData) {
-            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'netChannelDidConnect', this).call(this, messageData);
-            this.log("this: Joining Game");
-            this.joinGame("Player" + this.netChannel.getClientid()); // Automatically join the game with some name
-        }
-    }, {
-        key: 'netChannelDidDisconnect',
-
-
-        /**
-         * @inheritDoc
-         */
-        value: function netChannelDidDisconnect(messageData) {
-            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'netChannelDidDisconnect', this).call(this, messageData);
-            this.log("netChannelDidDisconnect");
-        }
-    }, {
-        key: 'log',
-
-
-        /**
-         * This function logs something to the right panel
-         * @param {Object} An object in the form of: { message: ['Client', 'domReady'] }
-         */
-        value: function log(msg) {
-            console.log("DemoClientGame: " + msg);
-        }
-    }]);
-
-    return DemoClientGame;
-}(AbstractClientGame);
-
-module.exports = DemoClientGame;
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1062,6 +862,206 @@ var CircleEntity = function (_GameEntity) {
 }(GameEntity);
 
 module.exports = CircleEntity;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var DemoClientGame = __webpack_require__(6);
+
+(function () {
+    var onDocumentReady = function onDocumentReady() {
+        var clientGame = new DemoClientGame();
+    };
+
+    window.addEventListener('load', onDocumentReady, false);
+})();
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/* global CAAT */
+var Constants = __webpack_require__(0);
+var CircleEntity = __webpack_require__(4);
+var DemoView = __webpack_require__(9);
+var AbstractClientGame = __webpack_require__(10);
+var PlayerEntity = __webpack_require__(15);
+var KeyboardInputTrait = __webpack_require__(16);
+
+/**
+ File:
+ DemoServerGame
+ Created By:
+ Mario Gonzalez
+ Project:
+ DemoApp
+ Abstract:
+ This is a concrete server instance of our game
+ Basic Usage:
+ DemoServerGame = new DemoApp.DemoServerGame();
+ DemoServerGame.start();
+ DemoServerGame.explodeEveryone();
+ Version:
+ 1.0
+ */
+
+var DemoClientGame = function (_AbstractClientGame) {
+    _inherits(DemoClientGame, _AbstractClientGame);
+
+    function DemoClientGame() {
+        var _ret;
+
+        _classCallCheck(this, DemoClientGame);
+
+        var _this = _possibleConstructorReturn(this, (DemoClientGame.__proto__ || Object.getPrototypeOf(DemoClientGame)).call(this));
+
+        _this.setupView();
+        _this.startGameClock();
+        return _ret = _this, _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(DemoClientGame, [{
+        key: 'setupView',
+        value: function setupView() {
+            this.view = new DemoView();
+            this.view.insertIntoHTMLElementWithId("gamecontainer");
+
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'setupView', this).call(this, this);
+        }
+    }, {
+        key: 'tick',
+
+
+        /**
+         * @inheritDoc
+         */
+        value: function tick() {
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'tick', this).call(this);
+            this.view.stats.update();
+            this.view.update(this.gameClockReal);
+        }
+    }, {
+        key: 'createEntityFromDesc',
+
+
+        /**
+         * @inheritDoc
+         */
+        value: function createEntityFromDesc(entityDesc) {
+
+            var diameter = entityDesc.radius * 2;
+
+            // Create a view via CAAT
+            var aCircleView = new CAAT.ShapeActor();
+            aCircleView.create();
+            aCircleView.setSize(diameter, diameter);
+            aCircleView.setFillStyle("#" + CAAT.Color.prototype.hsvToRgb(entityDesc.entityid * 15 % 360, 40, 99).toHex()); // Random color
+            aCircleView.setLocation(entityDesc.x, entityDesc.y); // Place in the center of the screen, use the director's width/height
+
+            var newEntity = null;
+
+            var isOwnedByMe = entityDesc.clientid == this.netChannel.clientid;
+            // If this is a player entity
+            if (entityDesc.entityType & Constants.ENTITY_TYPES.PLAYER_ENTITY) {
+                newEntity = new PlayerEntity(entityDesc.entityid, entityDesc.clientid);
+
+                // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
+                if (isOwnedByMe) {
+                    newEntity.addTraitAndExecute(new KeyboardInputTrait());
+                    this.clientCharacter = newEntity;
+                }
+            } else {
+                newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
+            }
+
+            newEntity.getPosition().setPos(entityDesc.x, entityDesc.y);
+            newEntity.setView(aCircleView);
+
+            this.fieldController.addEntity(newEntity);
+        }
+    }, {
+        key: 'parseEntityDescriptionArray',
+
+
+        /**
+         * Called by the ClientNetChannel, it sends us an array containing tightly packed values and expects us to return a meaningful object
+         * It is left up to each game to implement this function because only the game knows what it needs to send.
+         * However the 4 example projects in RealtimeMultiplayerNodeJS offer should be used ans examples
+         *
+         * @param {Array} entityDescAsArray An array of tightly packed values
+         * @return {Object} An object which will be returned to you later on tied to a specific entity
+         */
+        value: function parseEntityDescriptionArray(entityDescAsArray) {
+            var entityDescription = {};
+
+            // It is left upto each game to implement this function because only the game knows what it needs to send.
+            // However the 4 example projects in RealtimeMultiplayerNodeJS offer this an example
+            entityDescription.entityid = entityDescAsArray[0];
+            entityDescription.clientid = entityDescAsArray[1];
+            entityDescription.entityType = +entityDescAsArray[2];
+            entityDescription.x = +entityDescAsArray[3];
+            entityDescription.y = +entityDescAsArray[4];
+            entityDescription.radius = +entityDescAsArray[5];
+            entityDescription.color = entityDescAsArray[6];
+            return entityDescription;
+        }
+    }, {
+        key: 'netChannelDidConnect',
+
+
+        /**
+         * @inheritDoc
+         */
+        value: function netChannelDidConnect(messageData) {
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'netChannelDidConnect', this).call(this, messageData);
+            this.log("this: Joining Game");
+            this.joinGame("Player" + this.netChannel.getClientid()); // Automatically join the game with some name
+        }
+    }, {
+        key: 'netChannelDidDisconnect',
+
+
+        /**
+         * @inheritDoc
+         */
+        value: function netChannelDidDisconnect(messageData) {
+            _get(DemoClientGame.prototype.__proto__ || Object.getPrototypeOf(DemoClientGame.prototype), 'netChannelDidDisconnect', this).call(this, messageData);
+            this.log("netChannelDidDisconnect");
+        }
+    }, {
+        key: 'log',
+
+
+        /**
+         * This function logs something to the right panel
+         * @param {Object} An object in the form of: { message: ['Client', 'domReady'] }
+         */
+        value: function log(msg) {
+            console.log("DemoClientGame: " + msg);
+        }
+    }]);
+
+    return DemoClientGame;
+}(AbstractClientGame);
+
+module.exports = DemoClientGame;
 
 /***/ }),
 /* 7 */
@@ -1815,7 +1815,7 @@ var AbstractClientGame = function (_AbstractGame) {
         value: function joinGame(aNickname) {
             this.nickname = aNickname;
             // Create a 'join' message and queue it in ClientNetChannel
-            this.netChannel.addMessageToQueue(true, Constants.CMDS.PLAYER_JOINED, { nickname: this.nickname });
+            this.netChannel.addMessageToQueue(true, Constants.CMDS.PLAYER_JOINED, { nickname: "rickd" });
         }
 
         /**
@@ -2289,6 +2289,8 @@ var ClientNetChannel = function () {
         this.socketio = null; // Reference to singluar Socket.IO instance
         this.clientid = null; // A client id is set by the server on first connect
 
+        this.cmdMap = {};
+
         // Settings
         this.cl_updateRate = Constants.CLIENT_SETTING.CMD_RATE, // How often we can receive messages per sec
 
@@ -2333,7 +2335,9 @@ var ClientNetChannel = function () {
     }, {
         key: 'setupCmdMap',
         value: function setupCmdMap() {
-            this.cmdMap = {};
+            console.log("mapping cmds");
+            console.log(Constants.CMDS);
+            console.log(Constants.CMDS.SERVER_FULL_UPDATE);
             this.cmdMap[Constants.CMDS.SERVER_FULL_UPDATE] = this.onServerWorldUpdate;
         }
 
@@ -2406,7 +2410,13 @@ var ClientNetChannel = function () {
                 }
 
             // Call the mapped function
-            if (this.cmdMap[aNetChannelMessage.cmd]) this.cmdMap[aNetChannelMessage.cmd].call(this, aNetChannelMessage);else console.log("(NetChannel)::onSocketMessage could not map '" + aNetChannelMessage.cmd + "' to function!");
+            if (this.cmdMap[aNetChannelMessage.cmd]) {
+                this.cmdMap[aNetChannelMessage.cmd].call(this, aNetChannelMessage);
+            } else {
+                console.log("(NetChannel)::onSocketMessage CLIENT could not map '" + aNetChannelMessage.cmd + "' to function!");
+                console.log("map contains");
+                console.log(this.cmdMap);
+            }
         }
     }, {
         key: 'onSocketDisconnect',
@@ -2762,7 +2772,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Constants = __webpack_require__(0);
-var CircleEntity = __webpack_require__(6);
+var CircleEntity = __webpack_require__(4);
 var Point = __webpack_require__(1);
 /**
  File:
