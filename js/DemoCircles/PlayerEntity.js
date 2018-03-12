@@ -1,5 +1,6 @@
 var Constants = require('./DemoAppConstants');
 var CircleEntity = require('./CircleEntity');
+var Point = require('../model/Point');
 /**
  File:
  DemoApp.CircleEntity
@@ -20,6 +21,7 @@ class PlayerEntity extends CircleEntity{
         this.entityType = Constants.PLAYER_ENTITY;
         this.input = null;
         this.radius = 40;
+        this.position = new Point(0,0);
         return this;
     };
 
@@ -29,6 +31,10 @@ class PlayerEntity extends CircleEntity{
 
     setInput(input) {
         this.input = input;
+    }
+    
+    getPosition() {
+        super.getPosition();
     }
 
     updatePosition() {
@@ -44,7 +50,7 @@ class PlayerEntity extends CircleEntity{
         this.velocity.translatePoint(this.acceleration);
         this.velocity.limit(5);
         this.velocity.multiply(0.85);
-        this.acceleration.set(0, 0);
+        this.acceleration.setPos(0, 0);
         this.collisionCircle.position.translatePoint(this.velocity);
         this.position = this.collisionCircle.position.clone();
     }

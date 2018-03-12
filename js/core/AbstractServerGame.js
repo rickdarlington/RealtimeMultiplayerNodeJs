@@ -22,14 +22,12 @@ var ServerNetChannel = require('../network/ServerNetChannel');
 		RealtimeMultiplayerGame.extend(MyGameClass, RealtimeMultiplayerGame.AbstractServerGame, null);
 	};
  */
-var cmdMap = [];        				// Map the CMD constants to functions
-var nextEntityID = 0;					// Incremented for everytime a new object is created}
-    
 class AbstractServerGame extends AbstractGame {
     
     constructor() {
         super();
         this.intervalFramerate += 6;
+        this.nextEntityID = 0;
         this.cmdMap = [];
         this.netChannel = new ServerNetChannel(this);
         return this;

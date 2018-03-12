@@ -96,15 +96,17 @@ class CircleManager {
 				continue;
 			}
 
-			aCircle.position.set(aCircle.delegate.x + aCircle.offset.x, aCircle.delegate.y + aCircle.offset.y);
+			aCircle.getPosition().setPos(aCircle.delegate.x + aCircle.offset.x, aCircle.delegate.y + aCircle.offset.y);
 		}
 	}
 
 
 	pushAllCirclesTowardTarget(aTarget) {
-		var v = new Point().set(0,0),
+		var v = new Point(),
 			circleList = this.allCircles,
 			len = circleList.length;
+
+			v.setPos(0,0);
 
 		// push toward target position
 		for(var n = 0; n < this.numberOfTargetingPasses; n++)
@@ -115,12 +117,12 @@ class CircleManager {
 
 				if(c.isFixed) continue;
 
-				v.x = c.position.x - (c.targetPosition.x+c.offset.x);
-				v.y = c.position.y - (c.targetPosition.y+c.offset.y);
+				v.x = c.getPosition().x - (c.targetPosition.x+c.offset.x);
+				v.y = c.getPosition().y - (c.targetPosition.y+c.offset.y);
 				v.multiply(c.targetChaseSpeed);
 
-				c.position.x -= v.x;
-				c.position.y -= v.y;
+				c.getPosition().x -= v.x;
+				c.getPosition().y -= v.y;
 			}
 		}
 	}
@@ -133,9 +135,11 @@ class CircleManager {
 	{
 		this.removeExpiredElements();
 
-		var v = new Point().set(0, 0),
+		var v = new Point(),
 			circleList = this.allCircles,
 			len = circleList.length;
+
+		v.setPos(0, 0);
 
 		// Collide circles
 		for(var n = 0; n < this.numberOfCollisionPasses; n++)
@@ -154,12 +158,12 @@ class CircleManager {
 						continue;   // It's us!
 					}
 
-					var dx = cj.position.x - ci.position.x,
-						dy = cj.position.y - ci.position.y;
+					var dx = cj.getPosition().x - ci.getPosition().x,
+						dy = cj.getPosition().y - ci.getPosition().y;
 
 					// The distance between the two circles radii, but we're also gonna pad it a tiny bit
 					var r = (ci.radius + cj.radius),
-						d = ci.position.getDistanceSquared(cj.position);
+						d = ci.getPosition().getDistanceSquared(cj.position);
 
 					/**
 					 * Collision detected!
@@ -180,7 +184,7 @@ class CircleManager {
 								v.multiply(2.0);	// Double inverse force to make up for the fact that the other object is fixed
 
 							// ADD the velocity
-							cj.position.translatePoint(v);
+							cj.getPosition().translatePoint(v);
 						}
 
 						// Move ci opposite of the collision as long as its not fixed
@@ -190,7 +194,7 @@ class CircleManager {
 								v.multiply(2.0);	// Double inverse force to make up for the fact that the other object is fixed
 
 							 // SUBTRACT the velocity
-							ci.position.subtract(v);
+							ci.getPosition().subtract(v);
 						}
 
 						// Emit the collision event from each circle, with itself as the first parameter
@@ -221,6 +225,10 @@ class CircleManager {
 		if(boundsRule === undefined) {
 			throw "No Boundary rule defined!";
 		}
+		if(!aCircle.position) {
+			console.log(aCircle.entityId + " can't bounds check");
+			return;
+		}
 		var xpos = aCircle.position.x;
 		var ypos = aCircle.position.y;
 
@@ -240,29 +248,29 @@ class CircleManager {
 
 		// Wrap X
 		if(boundsRule & wrapXMask && xpos-diameter > this.bounds.width) {
-			aCircle.position.x = this.bounds.x - radius;
+			aCircle.getPosition().x = this.bounds.x - radius;
 		} else if(boundsRule & wrapXMask && xpos+diameter < this.bounds.x) {
-			aCircle.position.x = this.bounds.width - radius;
+			aCircle.getPosition().x = this.bounds.width - radius;
 		}
 		// Wrap Y
 		if(boundsRule & wrapYMask && ypos-diameter > this.bounds.height) {
-			aCircle.position.y = this.bounds.y - radius;
+			aCircle.getPosition().y = this.bounds.y - radius;
 		} else if(boundsRule & wrapYMask && ypos+diameter < this.bounds.y) {
-			aCircle.position.y = this.bounds.height + radius;
+			aCircle.getPosition().y = this.bounds.height + radius;
 		}
 
 		// Constrain X
 		if(boundsRule & constrainXMask && xpos+radius >= this.bounds.width) {
-			aCircle.position.x = aCircle.position.x = this.bounds.width-radius;
+			aCircle.getPosition().x = aCircle.getPosition().x = this.bounds.width-radius;
 		} else if(boundsRule & constrainXMask && xpos-radius < this.bounds.x) {
-			aCircle.position.x = this.bounds.x + radius;
+			aCircle.getPosition().x = this.bounds.x + radius;
 		}
 
 		// Constrain Y
 		if(boundsRule & constrainYMask && ypos+radius > this.bounds.height) {
-			aCircle.position.y = this.bounds.height - radius;
+			aCircle.getPosition().y = this.bounds.height - radius;
 		} else if(boundsRule & constrainYMask && ypos-radius < this.bounds.y) {
-			aCircle.position.y = this.bounds.y + radius;
+			aCircle.getPosition().y = this.bounds.y + radius;
 		}
 	}
 

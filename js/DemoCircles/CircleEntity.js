@@ -23,17 +23,20 @@ class CircleEntity extends GameEntity {
         // radius: Constants.ENTITY_DEFAULT_RADIUS,
         // velocity: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
         // acceleration: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
-        // collisionCircle: null,										// An instance of RealtimeMultiplayerGame.modules.circlecollision.PackedCircle
+        // collisionCircle: null, // An instance of RealtimeMultiplayerGame.modules.circlecollision.PackedCircle
         // entityType: Constants.GENERIC_CIRCLE,
         super(anEntityid, aClientid);
         this.nOffset = Math.random() * 2000;
-
         this.setColor("FFFFFF");
         this.velocity = new Point(0, 0);
         this.acceleration = new Point(0, 0);
+        this.position = new Point(0,0);
         return this;
     }
 
+    getPosition() {
+        super.getPosition();
+    }
 
     /**
      * Update the entity's view - this is only called on the clientside
@@ -59,7 +62,7 @@ class CircleEntity extends GameEntity {
         // Modify velocity using perlin noise
         var theta = 0.008;
 
-        var noise = new Noise(this.nOffset + this.position.x * theta, this.nOffset + this.position.y * theta, gameTick * 0.003);
+        var noise = new Noise(this.nOffset + this.getPosition().x * theta, this.nOffset + this.getPosition().y * theta, gameTick * 0.003);
         var angle = noise * 12;
         var speed = 0.2;
         this.acceleration.x += Math.cos(angle) * speed - 0.3;
@@ -69,9 +72,9 @@ class CircleEntity extends GameEntity {
         this.velocity.translatePoint(this.acceleration);
         this.velocity.limit(5);
         this.velocity.multiply(0.9);
-        this.acceleration.set(0, 0);
-        this.collisionCircle.position.translatePoint(this.velocity);
-        this.position = this.collisionCircle.position.clone();
+        this.acceleration.setPos(0, 0);
+        this.collisionCircle.getPosition().translatePoint(this.velocity);
+        this.position = this.collisionCircle.getPosition().clone();
     }
 
     tempColor() {

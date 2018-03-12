@@ -1,3 +1,4 @@
+/* global io */
 var Constants = require('../model/Constants');
 var NetChannelMessage = require('../model/NetChannelMessage');
 var SortedLookupTable = require('../lib/SortedLookupTable');
@@ -118,6 +119,7 @@ class ClientNetChannel {
         if (aNetChannelMessage.id == this.clientid) // We sent this, clear our reliable buffer que
         {
             if (aNetChannelMessage.cmd == Constants.CMDS.SERVER_FULL_UPDATE) {
+                console.log("this is a bug, set debugger here!");
 //					debugger; //  IF CALLED THIS IS A BUG
             }
 

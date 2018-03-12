@@ -1,3 +1,5 @@
+var BaseTrait = require('./BaseTrait');
+var Keyboard = require('../../input/Keyboard');
 /**
  File:
  BaseTrait.js
@@ -19,11 +21,11 @@
  {
      this.callSuper();
      this.intercept(['onHit', 'getShotPower']);
- },
+ }
 
  onHit: function() {
  		// Do nothing, im invincible!
- 	},
+ 	}
 
  getShotStrength: function() {
  		return 100000000; // OMGBBQ! Thats high!
@@ -40,42 +42,41 @@
 		this.clientCharacter = aCharacter;
 	}
  */
-(function () {
-    RealtimeMultiplayerGame.namespace("RealtimeMultiplayerGame.controller.traits");
+class KeyboardInputTrait extends BaseTrait {    
+    
+    constructor() {
+        super();
+        this.displayName = "KeyboardInputTrait";					// Unique string name for this Trait
+    }
 
-    RealtimeMultiplayerGame.controller.traits.KeyboardInputTrait = function () {
-        RealtimeMultiplayerGame.controller.traits.KeyboardInputTrait.superclass.constructor.call(this);
-    };
 
-    RealtimeMultiplayerGame.controller.traits.KeyboardInputTrait.prototype = {
-        displayName: "KeyboardInputTrait",					// Unique string name for this Trait
-        /**
-         * Attach the trait to the host object
-         * @param anEntity
-         */
-        attach: function (anEntity) {
-            RealtimeMultiplayerGame.controller.traits.KeyboardInputTrait.superclass.attach.call(this, anEntity);
+    
+    /**
+     * Attach the trait to the host object
+     * @param anEntity
+     */
+    attach(anEntity) {
+        super.attach(anEntity);
 
-            // Intercept those two properties from the attached enitity with our own
-            this.intercept(['constructEntityDescription', 'handleInput']);
-            this.attachedEntity.input = new RealtimeMultiplayerGame.Input.Keyboard();
-            this.attachedEntity.input.attachEvents();
-        },
+        // Intercept those two properties from the attached enitity with our own
+        this.intercept(['constructEntityDescription', 'handleInput']);
+        this.attachedEntity.input = new Keyboard();
+        this.attachedEntity.input.attachEvents();
+    }
 
-        /**
-         * Implement our own intercepted version of the methods/properties
-         */
-        constructEntityDescription: function (gameTick, wantsFullUpdate) {
-            return {
-                entityid: this.entityid,
-                input: this.input.constructInputBitmask()
-            }
-        },
-
-        // Do nothing
-        handleInput: function (gameClock) {
+    /**
+     * Implement our own intercepted version of the methods/properties
+     */
+    constructEntityDescription(gameTick, wantsFullUpdate) {
+        return {
+            entityid: this.entityid,
+            input: this.input.constructInputBitmask()
         }
-    };
+    }
 
-    RealtimeMultiplayerGame.extend(RealtimeMultiplayerGame.controller.traits.KeyboardInputTrait, RealtimeMultiplayerGame.controller.traits.BaseTrait);
-})();
+    // Do nothing
+    handleInput(gameClock) {
+    }
+}
+
+module.exports = KeyboardInputTrait;

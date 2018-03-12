@@ -20,8 +20,8 @@ module.exports = {
     SERVER_SETTING: {
         CLIENT_ID: 0,
         SOCKET_PROTOCOL: "http",
-        SOCKET_DOMAIN: "localhost",
-        SOCKET_PORT: 8081,
+        SOCKET_DOMAIN: "rickdarlington.io",
+        SOCKET_PORT: 8001,
 
         /** @return {string} */
         GET_URI: function () {

@@ -1,7 +1,10 @@
+/* global CAAT */
 var Constants = require('./DemoAppConstants');
 var CircleEntity = require('./CircleEntity');
 var DemoView = require('./DemoView');
 var AbstractClientGame = require('../core/AbstractClientGame');
+var PlayerEntity = require('./PlayerEntity');
+var KeyboardInputTrait = require('../controller/traits/KeyboardInputTrait');
 
 /**
  File:
@@ -69,14 +72,14 @@ class DemoClientGame extends AbstractClientGame {
 
             // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
             if (isOwnedByMe) {
-                newEntity.addTraitAndExecute(new RealtimeMultiplayerGame.controller.traits.KeyboardInputTrait());
+                newEntity.addTraitAndExecute(new KeyboardInputTrait());
                 this.clientCharacter = newEntity;
             }
         } else {
             newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
         }
 
-        newEntity.position.set(entityDesc.x, entityDesc.y);
+        newEntity.getPosition().setPos(entityDesc.x, entityDesc.y);
         newEntity.setView(aCircleView);
 
         this.fieldController.addEntity(newEntity);

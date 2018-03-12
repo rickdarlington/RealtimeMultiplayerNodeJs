@@ -20,7 +20,6 @@ class GameEntity {
         this.clientid = -1;														// Owner of this object
         this.entityid = -1;														// UUID for this entity
         this.entityType = -1;														// A special interger representing the entityType sent via along with other network info
-        this.position = new Point(0,0).ZERO;  		// Current position of this entity
         this.rotation = 0;
         this.traits = null;														// An array of our traits; in reverse added order
         this.view = null;
@@ -168,6 +167,10 @@ class GameEntity {
             }
         }
         return trait;
+    }
+    
+    doSomething() {
+        return "hi";
     }
 }
 

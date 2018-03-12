@@ -87,7 +87,7 @@ class DemoServerGame extends AbstractServerGame {
         // Create the GameEntity
         var circleEntity = new DemoApp.CircleEntity(anEntityid, aClientid);
         circleEntity.radius = aRadius;
-        circleEntity.position.set(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
+        circleEntity.getPosition().setPos(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
         circleEntity.setCollisionCircle(collisionCircle);
 
         // Place the circle and collision circle into corresponding containers
@@ -101,7 +101,7 @@ class DemoServerGame extends AbstractServerGame {
     createPlayerEntity(anEntityid, aClientid) {
         // Create the GameEntity
         var playerEntity = new PlayerEntity(anEntityid, aClientid);
-        playerEntity.position.set(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
+        playerEntity.position.setPos(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
 
         var collisionCircle = new Circle();
         collisionCircle.setRadius(playerEntity.radius);

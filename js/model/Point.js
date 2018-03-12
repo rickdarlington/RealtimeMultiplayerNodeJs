@@ -23,7 +23,7 @@ class Point {
         return this;
     }
 
-    set(x, y) {
+    setPos(x, y) {
         this.x = x;
         this.y = y;
         return this;
@@ -34,7 +34,7 @@ class Point {
      */
     clone() {
         var p = new Point();
-        p.set(this.x, this.y);
+        p.setPos(this.x, this.y);
         return p;
     }
     /**
@@ -78,7 +78,7 @@ class Point {
      * @return {RealtimeMultiplayerGame.model.Point}
      */
     subtractClone(aPoint) {
-        return new RealtimeMultiplayerGame.model.Point(this.x - aPoint.x, this.y - aPoint.y)
+        return new Point(this.x - aPoint.x, this.y - aPoint.y)
     }
 
     /**
@@ -199,7 +199,7 @@ class Point {
      * @return {string}
      */
     toString() {
-        return "(RealtimeMultiplayerGame.model.Point)" +
+        return "(Point)" +
             " x:'" + String(Math.round(Math.floor(this.x * 10)) / 10) +
             " y:" + String(Math.round(Math.floor(this.y * 10)) / 10);
     }

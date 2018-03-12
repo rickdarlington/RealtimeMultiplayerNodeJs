@@ -172,7 +172,7 @@ class SortedLookupTable extends LookupTable {
 		this._keys.splice(index, 1);
 	}
 
-	indexOf(key)
+	_indexOf(key)
 	{
 		var keys = this._keys,
 			n = keys.length,

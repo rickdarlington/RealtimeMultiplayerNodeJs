@@ -46,8 +46,14 @@ class WorldEntityDescription {
         var fullDescriptionString = '';
 
         this.allEntities.forEach(function (key, entity) {
-            var entityDescriptionString = entity.constructEntityDescription(this.gameTick);
-            fullDescriptionString += "|" + entityDescriptionString;
+            
+            if(entity.entityType && entity.entityId) {
+                var entityDescriptionString = entity.constructEntityDescription(this.gameTick);
+                fullDescriptionString += "|" + entityDescriptionString;
+            }
+            else {
+                console.log("broken entity");
+            }
         }, this);
 
         return fullDescriptionString;

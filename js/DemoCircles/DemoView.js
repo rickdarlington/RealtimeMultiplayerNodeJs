@@ -1,27 +1,7 @@
+/* global CAAT */
+/* global Stats */
 var Constants = require('./DemoAppConstants');
-/**
- File:
- AbstractServerGame.js
- Created By:
- Mario Gonzalez
- Project:
- RealtimeMultiplayerNodeJS
- Abstract:
- This class is the base Game controller in RealtimeMultiplayerGame on the server side.
- It provides things such as dropping players, and contains a ServerNetChannel
- Basic Usage:
- [This class is not instantiated! - below is an example of using this class by extending it]
 
- (function(){
-		MyGameClass = function() {
-			return this;
- 		}
-
-		RealtimeMultiplayerGame.extend(MyGameClass, RealtimeMultiplayerGame.AbstractServerGame, null);
-	};
- Version:
- 1.0
- */
 class DemoView {
     constructor() {
         this.setupCAAT();
@@ -34,6 +14,9 @@ class DemoView {
         this.caatScene = new CAAT.Scene(); // Create a scene, all directors must have at least one scene - this is where all your stuff goes
         this.caatScene.create();	// Notice we call create when creating this, and ShapeActor below. Both are Actors
         this.caatScene.setFillStyle('#000000');
+
+        console.log("playarea:");
+        console.log(Constants.GAME_WIDTH + " x " + Constants.GAME_HEIGHT);
 
         this.caatDirector = new CAAT.Director().initialize(Constants.GAME_WIDTH, Constants.GAME_HEIGHT); // Create the director instance
         this.caatDirector.addScene(this.caatScene); // Immediately add the scene once it's created

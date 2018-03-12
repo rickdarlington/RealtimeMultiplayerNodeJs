@@ -1,6 +1,7 @@
 var AbstractGame = require('../core/AbstractGame');
 var ClientNetChannel = require('../network/ClientNetChannel');
 var Constants = require('../model/Constants');
+var Point = require('../model/Point');
 
 /**
  File:
@@ -95,7 +96,7 @@ class AbstractClientGame extends AbstractGame {
 
         // Need atleast 2 updates to render between
         if (len < 2) return;
-        var newPosition = new RealtimeMultiplayerGame.model.Point(0, 0),
+        var newPosition = new Point(0, 0),
             newRotation = 0.0;
 
         // if the distance between prev and next is too great - don't interpolate
@@ -163,10 +164,10 @@ class AbstractClientGame extends AbstractGame {
         else if (t < 0) t = 0.0;
 
         // Note: We want to render at time "B", so grab the position at time "A" (previous), and time "C"(next)
-        var entityPositionPast = new RealtimeMultiplayerGame.model.Point(0, 0),
+        var entityPositionPast = new Point(0, 0),
             entityRotationPast = 0;
 
-        var entityPositionFuture = new RealtimeMultiplayerGame.model.Point(0, 0),
+        var entityPositionFuture = new Point(0, 0),
             entityRotationFuture = 0;
 
         // Update players
