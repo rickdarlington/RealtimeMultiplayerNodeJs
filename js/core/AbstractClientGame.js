@@ -173,7 +173,6 @@ class AbstractClientGame extends AbstractGame {
         // Update players
         nextWED.forEach(function (key, entityDesc) {
             // Catch garbage values
-            debugger;
             var entityid = entityDesc.entityid;
             var entity = this.fieldController.getEntityWithid(entityid);
 

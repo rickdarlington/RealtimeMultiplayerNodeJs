@@ -5,6 +5,7 @@ var Noise = require("../model/ImprovedNoise.js");
 var AbstractServerGame = require('../core/AbstractServerGame')
 var CircleManager = require('../lib/circlecollision/CircleManager');
 var Circle = require('../lib/circlecollision/Circle');
+var CircleEntity = require('../DemoCircles/CircleEntity');
 var PlayerEntity = require('../DemoCircles/PlayerEntity');
 var Keyboard = require('../input/Keyboard');
 /**
@@ -82,11 +83,11 @@ class DemoServerGame extends AbstractServerGame {
      */
     createCircleEntity(aRadius, anEntityid, aClientid) {
         // Create a randomly sized circle, that will represent this entity in the collision manager
-        var collisionCircle = new CircleManager();
+        var collisionCircle = new Circle();
         collisionCircle.setRadius(aRadius);
 
         // Create the GameEntity
-        var circleEntity = new DemoApp.CircleEntity(anEntityid, aClientid);
+        var circleEntity = new CircleEntity(anEntityid, aClientid);
         circleEntity.radius = aRadius;
         circleEntity.position.setPos(Math.random() * AppConstants.GAME_WIDTH, Math.random() * AppConstants.GAME_HEIGHT);
         circleEntity.setCollisionCircle(collisionCircle);

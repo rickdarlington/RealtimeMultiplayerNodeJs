@@ -47,7 +47,6 @@ class FieldController {
             entity.rotation = newRotation;
             entity.lastReceivedEntityDescription = newEntityDescription;
         } else {
-            debugger;
             console.log("(FieldController)::updateEntity - Error: Cannot find entity with entityid", entityid);
         }
     }

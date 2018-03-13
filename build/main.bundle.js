@@ -763,7 +763,7 @@ var CircleEntity = function (_GameEntity) {
             // Modify velocity using perlin noise
             var theta = 0.008;
 
-            var noise = new Noise(this.nOffset + this.position.x * theta, this.nOffset + this.position.y * theta, gameTick * 0.003);
+            var noise = new Noise().generate(this.nOffset + this.position.x * theta, this.nOffset + this.position.y * theta, gameTick * 0.003);
             var angle = noise * 12;
             var speed = 0.2;
             this.acceleration.x += Math.cos(angle) * speed - 0.3;
@@ -1305,41 +1305,64 @@ module.exports = GameEntity;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// http://mrl.nyu.edu/~perlin/noise/
-var ImprovedNoise = function () {
-    function ImprovedNoise() {
-        _classCallCheck(this, ImprovedNoise);
+var Noise = function () {
+    function Noise() {
+        _classCallCheck(this, Noise);
 
-        var p = [151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230, 220, 105, 92, 41, 55, 46, 245, 40, 244, 102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76, 132, 187, 208, 89, 18, 169, 200, 196, 135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186, 3, 64, 52, 217, 226, 250, 124, 123, 5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59, 227, 47, 16, 58, 17, 182, 189, 28, 42, 223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70, 221, 153, 101, 155, 167, 43, 172, 9, 129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228, 251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14, 239, 107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180];
+        this.p = [151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175, 74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230, 220, 105, 92, 41, 55, 46, 245, 40, 244, 102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76, 132, 187, 208, 89, 18, 169, 200, 196, 135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186, 3, 64, 52, 217, 226, 250, 124, 123, 5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59, 227, 47, 16, 58, 17, 182, 189, 28, 42, 223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70, 221, 153, 101, 155, 167, 43, 172, 9, 129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104, 218, 246, 97, 228, 251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81, 51, 145, 235, 249, 14, 239, 107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180];
 
         for (var i = 0; i < 256; i++) {
-
-            p[256 + i] = p[i];
+            this.p[256 + i] = this.p[i];
         }
     }
 
-    _createClass(ImprovedNoise, [{
+    _createClass(Noise, [{
+        key: "generate",
+        value: function generate(x, y, z) {
+            var floorX = ~~x,
+                floorY = ~~y,
+                floorZ = ~~z;
+
+            var X = floorX & 255,
+                Y = floorY & 255,
+                Z = floorZ & 255;
+
+            x -= floorX;
+            y -= floorY;
+            z -= floorZ;
+
+            var xMinus1 = x - 1,
+                yMinus1 = y - 1,
+                zMinus1 = z - 1;
+
+            var u = this.fade(x),
+                v = this.fade(y),
+                w = this.fade(z);
+
+            var A = this.p[X] + Y,
+                AA = this.p[A] + Z,
+                AB = this.p[A + 1] + Z,
+                B = this.p[X + 1] + Y,
+                BA = this.p[B] + Z,
+                BB = this.p[B + 1] + Z;
+
+            return this.lerp(w, this.lerp(v, this.lerp(u, this.grad(this.p[AA], x, y, z), this.grad(this.p[BA], xMinus1, y, z)), this.lerp(u, this.grad(this.p[AB], x, yMinus1, z), this.grad(this.p[BB], xMinus1, yMinus1, z))), this.lerp(v, this.lerp(u, this.grad(this.p[AA + 1], x, y, zMinus1), this.grad(this.p[BA + 1], xMinus1, y, z - 1)), this.lerp(u, this.grad(this.p[AB + 1], x, yMinus1, zMinus1), this.grad(this.p[BB + 1], xMinus1, yMinus1, zMinus1))));
+        }
+    }, {
         key: "fade",
         value: function fade(t) {
-
             return t * t * t * (t * (t * 6 - 15) + 10);
         }
     }, {
         key: "lerp",
         value: function lerp(t, a, b) {
-
             return a + t * (b - a);
         }
     }, {
         key: "grad",
         value: function grad(hash, x, y, z) {
-
             var h = hash & 15;
             var u = h < 8 ? x : y,
                 v = h < 4 ? y : h == 12 || h == 14 ? x : z;
@@ -1347,53 +1370,8 @@ var ImprovedNoise = function () {
         }
     }]);
 
-    return ImprovedNoise;
-}();
-
-var Noise = function (_ImprovedNoise) {
-    _inherits(Noise, _ImprovedNoise);
-
-    function Noise(x, y, z) {
-        var _ret;
-
-        _classCallCheck(this, Noise);
-
-        var _this = _possibleConstructorReturn(this, (Noise.__proto__ || Object.getPrototypeOf(Noise)).call(this));
-
-        var n = new ImprovedNoise();
-
-        var floorX = ~~x,
-            floorY = ~~y,
-            floorZ = ~~z;
-
-        var X = floorX & 255,
-            Y = floorY & 255,
-            Z = floorZ & 255;
-
-        x -= floorX;
-        y -= floorY;
-        z -= floorZ;
-
-        var xMinus1 = x - 1,
-            yMinus1 = y - 1,
-            zMinus1 = z - 1;
-
-        var u = n.fade(x),
-            v = n.fade(y),
-            w = n.fade(z);
-
-        var A = n.p[X] + Y,
-            AA = n.p[A] + Z,
-            AB = n.p[A + 1] + Z,
-            B = n.p[X + 1] + Y,
-            BA = n.p[B] + Z,
-            BB = n.p[B + 1] + Z;
-
-        return _ret = n.lerp(w, n.lerp(v, n.lerp(u, n.grad(n.p[AA], x, y, z), n.grad(n.p[BA], xMinus1, y, z)), n.lerp(u, n.grad(n.p[AB], x, yMinus1, z), n.grad(n.p[BB], xMinus1, yMinus1, z))), n.lerp(v, n.lerp(u, n.grad(n.p[AA + 1], x, y, zMinus1), n.grad(n.p[BA + 1], xMinus1, y, z - 1)), n.lerp(u, n.grad(n.p[AB + 1], x, yMinus1, zMinus1), n.grad(n.p[BB + 1], xMinus1, yMinus1, zMinus1)))), _possibleConstructorReturn(_this, _ret);
-    }
-
     return Noise;
-}(ImprovedNoise);
+}();
 
 module.exports = Noise;
 
@@ -1719,7 +1697,6 @@ var AbstractClientGame = function (_AbstractGame) {
             // Update players
             nextWED.forEach(function (key, entityDesc) {
                 // Catch garbage values
-                debugger;
                 var entityid = entityDesc.entityid;
                 var entity = this.fieldController.getEntityWithid(entityid);
 
@@ -2107,7 +2084,6 @@ var FieldController = function () {
                 entity.rotation = newRotation;
                 entity.lastReceivedEntityDescription = newEntityDescription;
             } else {
-                debugger;
                 console.log("(FieldController)::updateEntity - Error: Cannot find entity with entityid", entityid);
             }
         }

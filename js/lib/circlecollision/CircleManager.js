@@ -15,6 +15,7 @@
  http://onedayitwillmake.com/CirclePackJS/
  */
 var Point = require('../../model/Point');
+var Constants = require('../../model/Constants');
 
 class CircleManager {
 
@@ -220,10 +221,10 @@ class CircleManager {
 
         // Toggle these on and off,
         // Wrap and bounce, are opposite behaviors so pick one or the other for each axis, or bad things will happen.
-        var wrapXMask = this.BOUNDARY_WRAP_X;
-        var wrapYMask = this.BOUNDARY_WRAP_Y;
-        var constrainXMask = this.BOUNDARY_CONSTRAIN_X;
-        var constrainYMask = this.BOUNDARY_CONSTRAIN_Y;
+        var wrapXMask = Constants.BOUNDARY_WRAP_X;
+        var wrapYMask = Constants.BOUNDARY_WRAP_Y;
+        var constrainXMask = Constants.BOUNDARY_CONSTRAIN_X;
+        var constrainYMask = Constants.BOUNDARY_CONSTRAIN_Y;
 
         // Convert to bitmask - Uncomment the one you want, or concact your own :)
 //			boundsRule = wrapXMask | wrapYMask;  // Wrap Y axis, but constrain horizontally

@@ -1,7 +1,7 @@
 var GameEntity = require('../model/GameEntity');
 var Constants = require('./DemoAppConstants');
 var Point = require('../model/Point');
-var Noise = require('../model/ImprovedNoise');
+var Noise = require('../model/Noise');
 
 /**
  File:
@@ -56,7 +56,7 @@ class CircleEntity extends GameEntity {
         // Modify velocity using perlin noise
         var theta = 0.008;
 
-        var noise = new Noise(this.nOffset + this.position.x * theta, this.nOffset + this.position.y * theta, gameTick * 0.003);
+        var noise = new Noise().generate(this.nOffset + this.position.x * theta, this.nOffset + this.position.y * theta, gameTick * 0.003);
         var angle = noise * 12;
         var speed = 0.2;
         this.acceleration.x += Math.cos(angle) * speed - 0.3;
