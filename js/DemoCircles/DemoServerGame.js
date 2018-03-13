@@ -1,4 +1,6 @@
 var Constants = require('../model/Constants');
+var AppConstants = require('./DemoAppConstants');
+var AppConstants = require('../DemoCircles/DemoAppConstants');
 var Noise = require("../model/ImprovedNoise.js");
 var AbstractServerGame = require('../core/AbstractServerGame')
 var CircleManager = require('../lib/circlecollision/CircleManager');
@@ -25,9 +27,8 @@ class DemoServerGame extends AbstractServerGame {
 
     constructor() {
         super();
-        this.cmdMap = [];
         this.collisionManager = null;
-        this.setGameDuration(Constants.GAME_DURATION);
+        this.setGameDuration(AppConstants.GAME_DURATION);
         this.setupCollisionManager();
         this.setupRandomField();
         return this;
@@ -40,14 +41,14 @@ class DemoServerGame extends AbstractServerGame {
      * If it is set, it will call that CMD on its delegate
      */
     setupCmdMap() {
-        this.cmdMap = [];
+        this.cmdMap = {};
         this.cmdMap[Constants.CMDS.PLAYER_UPDATE] = this.shouldUpdatePlayer;
     }
 
     setupCollisionManager() {
         // Collision simulation
         this.collisionManager = new CircleManager();
-        this.collisionManager.setBounds(0, 0, Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
+        this.collisionManager.setBounds(0, 0, AppConstants.GAME_WIDTH, AppConstants.GAME_HEIGHT);
         this.collisionManager.setNumberOfCollisionPasses(2);
         this.collisionManager.setNumberOfTargetingPasses(0);
         this.collisionManager.setCallback(this.onCollisionManagerCollision, this);
@@ -66,9 +67,9 @@ class DemoServerGame extends AbstractServerGame {
      */
     setupRandomField() {
         //RealtimeMultiplayerGame.model.noise(10, 10, i/total)
-        var total = Constants.MAX_CIRCLES;
+        var total = AppConstants.MAX_CIRCLES;
         for (var i = 0; i < total; i++) {
-            var radius = Constants.ENTITY_DEFAULT_RADIUS + Math.random() * 5;
+            var radius = AppConstants.ENTITY_DEFAULT_RADIUS + Math.random() * 5;
             this.createCircleEntity(radius, this.getNextEntityID(), Constants.SERVER_SETTING.CLIENT_ID);
         }
     }
@@ -87,21 +88,21 @@ class DemoServerGame extends AbstractServerGame {
         // Create the GameEntity
         var circleEntity = new DemoApp.CircleEntity(anEntityid, aClientid);
         circleEntity.radius = aRadius;
-        circleEntity.getPosition().setPos(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
+        circleEntity.position.setPos(Math.random() * AppConstants.GAME_WIDTH, Math.random() * AppConstants.GAME_HEIGHT);
         circleEntity.setCollisionCircle(collisionCircle);
 
         // Place the circle and collision circle into corresponding containers
         this.collisionManager.addCircle(circleEntity.getCollisionCircle());
         this.fieldController.addEntity(circleEntity);
 
-        circleEntity.entityType = Constants.ENTITY_TYPES.GENERIC_CIRCLE;
+        circleEntity.entityType = AppConstants.GENERIC_CIRCLE;
         return circleEntity;
     }
 
     createPlayerEntity(anEntityid, aClientid) {
         // Create the GameEntity
         var playerEntity = new PlayerEntity(anEntityid, aClientid);
-        playerEntity.position.setPos(Math.random() * Constants.GAME_WIDTH, Math.random() * Constants.GAME_HEIGHT);
+        playerEntity.position.setPos(Math.random() * AppConstants.GAME_WIDTH, Math.random() * AppConstants.GAME_HEIGHT);
 
         var collisionCircle = new Circle();
         collisionCircle.setRadius(playerEntity.radius);
@@ -122,8 +123,8 @@ class DemoServerGame extends AbstractServerGame {
      */
     tick() {
         // Use both the BOUNDARY_WRAP_X flag, and the BOUNDARY_CONSTRAIN_Y flags as the rule
-        var boundsRule = CircleManager.BOUNDARY_WRAP_X;
-        boundsRule |= CircleManager.BOUNDARY_CONSTRAIN_Y;
+        var boundsRule = Constants.BOUNDARY_WRAP_X;
+        boundsRule |= Constants.BOUNDARY_CONSTRAIN_Y;
 
         this.collisionManager.handleBoundaryForAllCircles(boundsRule);
         this.collisionManager.handleCollisions();

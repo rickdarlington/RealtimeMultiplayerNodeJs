@@ -20,12 +20,12 @@ module.exports = {
     SERVER_SETTING: {
         CLIENT_ID: 0,
         SOCKET_PROTOCOL: "http",
-        SOCKET_DOMAIN: "rickdarlington.io",
+        SOCKET_DOMAIN: "localhost",
         SOCKET_PORT: 8001,
 
         /** @return {string} */
         GET_URI: function () {
-            return  this.SOCKET_PROTOCOL
+            return this.SOCKET_PROTOCOL
                 + "://" + this.SOCKET_DOMAIN
                 + ":" + this.SOCKET_PORT;
         }
@@ -49,7 +49,7 @@ module.exports = {
         PLAYER_JOINED: 5,           // Player has joined the current game
         PLAYER_DISCONNECT: 6,           // Player has disconnected
         PLAYER_UPDATE: 7,			// Player is sending sampled input
-        SERVER_FULL_UPDATE: 8			// Player is sending sampled input
+        SERVER_FULL_UPDATE: 8
     },
 
     // The client sends this bitmask to the server
@@ -62,5 +62,10 @@ module.exports = {
         SPACE: 1 << 4,
         SHIFT: 1 << 5,
         TAB: 1 << 6
-    }
+    },
+
+    BOUNDARY_WRAP_X: 1 << 0,
+    BOUNDARY_WRAP_Y: 1 << 1,
+    BOUNDARY_CONSTRAIN_X: 1 << 2,
+    BOUNDARY_CONSTRAIN_Y: 1 << 3,
 }

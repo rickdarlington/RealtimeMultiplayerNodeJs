@@ -81,6 +81,7 @@ class ClientNetChannel {
         console.log(Constants.CMDS);
         console.log(Constants.CMDS.SERVER_FULL_UPDATE);
         this.cmdMap[Constants.CMDS.SERVER_FULL_UPDATE] = this.onServerWorldUpdate;
+        this.cmdMap[Constants.CMDS.PLAYER_JOINED] = this.onJoined;
     }
 
     ///// SocketIO Callbacks
@@ -188,6 +189,11 @@ class ClientNetChannel {
             this.sendMessage(this.nextUnreliable);
             this.nextUnreliable = null;
         }
+    }
+
+    onJoined(msg) {
+        console.log("client joined");
+        console.log(msg);
     }
 
     /**

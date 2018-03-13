@@ -173,6 +173,7 @@ class AbstractClientGame extends AbstractGame {
         // Update players
         nextWED.forEach(function (key, entityDesc) {
             // Catch garbage values
+            debugger;
             var entityid = entityDesc.entityid;
             var entity = this.fieldController.getEntityWithid(entityid);
 
@@ -189,10 +190,10 @@ class AbstractClientGame extends AbstractGame {
                 if (!previousEntityDescription) return;
 
                 // Store past and future positions to compare
-                entityPositionPast.set(previousEntityDescription.x, previousEntityDescription.y);
+                entityPositionPast.setPos(previousEntityDescription.x, previousEntityDescription.y);
                 entityRotationPast = previousEntityDescription.rotation;
 
-                entityPositionFuture.set(entityDesc.x, entityDesc.y);
+                entityPositionFuture.setPos(entityDesc.x, entityDesc.y);
                 entityRotationFuture = entityDesc.rotation;
 
                 // if the distance between prev and next is too great - don't interpolate

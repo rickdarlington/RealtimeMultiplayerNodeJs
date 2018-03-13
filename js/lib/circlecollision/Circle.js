@@ -55,20 +55,20 @@ class Circle {
 
 	containsPoint(aPoint)
 	{
-		var distanceSquared = this.getPosition().getDistanceSquared(aPoint);
+		var distanceSquared = this.position.getDistanceSquared(aPoint);
 		return distanceSquared < this.radiusSquared;
 	}
 
 	getDistanceSquaredFromPosition(aPosition)
 	{
-		var distanceSquared = this.getPosition().getDistanceSquared(aPosition);
+		var distanceSquared = this.position.getDistanceSquared(aPosition);
 		// if it's shorter than either radius, we intersect
 		return distanceSquared < this.radiusSquared;
 	}
 
 	intersects(aCircle)
 	{
-		var distanceSquared = this.getPosition().getDistanceSquared(aCircle.getPosition());
+		var distanceSquared = this.position.getDistanceSquared(aCircle.position);
 		return (distanceSquared < this.radiusSquared || distanceSquared < aCircle.radiusSquared);
 	}
 

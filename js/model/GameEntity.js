@@ -1,4 +1,5 @@
 var Point = require('./Point');
+var Constants = require('../DemoCircles/DemoAppConstants');
 
 /**
  File:
@@ -17,18 +18,20 @@ var Point = require('./Point');
 class GameEntity {
 
     constructor(anEntityid, aClientid) {
-        this.clientid = -1;														// Owner of this object
-        this.entityid = -1;														// UUID for this entity
-        this.entityType = -1;														// A special interger representing the entityType sent via along with other network info
+        this.clientid = -1;									// Owner of this object
+        this.entityid = -1;									// UUID for this entity
+        this.entityType = -1;								// A special interger representing the entityType sent via along with other network info
         this.rotation = 0;
-        this.traits = null;														// An array of our traits; in reverse added order
+        this.traits = null;									// An array of our traits; in reverse added order
         this.view = null;
-        this.lastReceivedEntityDescription = null;									// The last received entity description (set by renderAtTime)
-        
+        this.lastReceivedEntityDescription = null;			// The last received entity description (set by renderAtTime)
+
+        this.radius = 40;
         this.clientid = aClientid;
         this.entityid = anEntityid;
         this.traits = [];
         this.position = new Point(0, 0);
+        this.entityType = Constants.UNKNOWN;
         return this;
     };
 
@@ -58,8 +61,8 @@ class GameEntity {
         var returnString = this.entityid;
         returnString += "," + this.clientid;
         returnString += "," + this.entityType;
-        returnString += "," + ~~this.position.x;
-        returnString += "," + ~~this.position.y;
+        returnString += "," + 0; //~~this.position.x;
+        returnString += "," + 0; //~~this.position.y;
 
         return returnString;
     }

@@ -626,7 +626,7 @@ module.exports = {
     SERVER_SETTING: {
         CLIENT_ID: 0,
         SOCKET_PROTOCOL: "http",
-        SOCKET_DOMAIN: "rickdarlington.io",
+        SOCKET_DOMAIN: "localhost",
         SOCKET_PORT: 8001,
 
         /** @return {string} */
@@ -653,7 +653,7 @@ module.exports = {
         PLAYER_JOINED: 5, // Player has joined the current game
         PLAYER_DISCONNECT: 6, // Player has disconnected
         PLAYER_UPDATE: 7, // Player is sending sampled input
-        SERVER_FULL_UPDATE: 8 // Player is sending sampled input
+        SERVER_FULL_UPDATE: 8
     },
 
     // The client sends this bitmask to the server
@@ -666,7 +666,12 @@ module.exports = {
         SPACE: 1 << 4,
         SHIFT: 1 << 5,
         TAB: 1 << 6
-    }
+    },
+
+    BOUNDARY_WRAP_X: 1 << 0,
+    BOUNDARY_WRAP_Y: 1 << 1,
+    BOUNDARY_CONSTRAIN_X: 1 << 2,
+    BOUNDARY_CONSTRAIN_Y: 1 << 3
 };
 
 /***/ }),
@@ -715,32 +720,24 @@ var CircleEntity = function (_GameEntity) {
         _classCallCheck(this, CircleEntity);
 
         var _this = _possibleConstructorReturn(this, (CircleEntity.__proto__ || Object.getPrototypeOf(CircleEntity)).call(this, anEntityid, aClientid));
-        // radius: Constants.ENTITY_DEFAULT_RADIUS,
-        // velocity: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
-        // acceleration: RealtimeMultiplayerGame.model.Point.prototype.ZERO,
-        // collisionCircle: null, // An instance of RealtimeMultiplayerGame.modules.circlecollision.PackedCircle
-        // entityType: Constants.GENERIC_CIRCLE,
 
-
+        _this.entityid = anEntityid;
+        _this.collisionCircle = null;
+        _this.entityType = Constants.GENERIC_CIRCLE;
         _this.nOffset = Math.random() * 2000;
         _this.setColor("FFFFFF");
-        _this.velocity = new Point(0, 0);
-        _this.acceleration = new Point(0, 0);
-        _this.position = new Point(0, 0);
+        _this.velocity = new Point(0, 0).ZERO();
+        _this.acceleration = new Point(0, 0).ZERO();
+        _this.radius = Constants.ENTITY_DEFAULT_RADIUS;
         return _ret = _this, _possibleConstructorReturn(_this, _ret);
     }
 
+    /**
+     * Update the entity's view - this is only called on the clientside
+     */
+
+
     _createClass(CircleEntity, [{
-        key: 'getPosition',
-        value: function getPosition() {
-            _get(CircleEntity.prototype.__proto__ || Object.getPrototypeOf(CircleEntity.prototype), 'getPosition', this).call(this);
-        }
-
-        /**
-         * Update the entity's view - this is only called on the clientside
-         */
-
-    }, {
         key: 'updateView',
         value: function updateView() {
             if (!this.view) return;
@@ -766,7 +763,7 @@ var CircleEntity = function (_GameEntity) {
             // Modify velocity using perlin noise
             var theta = 0.008;
 
-            var noise = new Noise(this.nOffset + this.getPosition().x * theta, this.nOffset + this.getPosition().y * theta, gameTick * 0.003);
+            var noise = new Noise(this.nOffset + this.position.x * theta, this.nOffset + this.position.y * theta, gameTick * 0.003);
             var angle = noise * 12;
             var speed = 0.2;
             this.acceleration.x += Math.cos(angle) * speed - 0.3;
@@ -776,8 +773,8 @@ var CircleEntity = function (_GameEntity) {
             this.velocity.limit(5);
             this.velocity.multiply(0.9);
             this.acceleration.setPos(0, 0);
-            this.collisionCircle.getPosition().translatePoint(this.velocity);
-            this.position = this.collisionCircle.getPosition().clone();
+            this.collisionCircle.position.translatePoint(this.velocity);
+            this.position = this.collisionCircle.position.clone();
         }
     }, {
         key: 'tempColor',
@@ -968,6 +965,12 @@ var DemoClientGame = function (_AbstractClientGame) {
 
             var diameter = entityDesc.radius * 2;
 
+            if (!entityDesc.entityType) {
+                console.log("demoClientGame");
+                console.log(entityDesc.entityType + " " + entityDesc.entityid);
+                return;
+            }
+
             // Create a view via CAAT
             var aCircleView = new CAAT.ShapeActor();
             aCircleView.create();
@@ -979,7 +982,7 @@ var DemoClientGame = function (_AbstractClientGame) {
 
             var isOwnedByMe = entityDesc.clientid == this.netChannel.clientid;
             // If this is a player entity
-            if (entityDesc.entityType & Constants.ENTITY_TYPES.PLAYER_ENTITY) {
+            if (entityDesc.entityType & Constants.PLAYER_ENTITY) {
                 newEntity = new PlayerEntity(entityDesc.entityid, entityDesc.clientid);
 
                 // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
@@ -991,7 +994,7 @@ var DemoClientGame = function (_AbstractClientGame) {
                 newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
             }
 
-            newEntity.getPosition().setPos(entityDesc.x, entityDesc.y);
+            newEntity.position.setPos(entityDesc.x, entityDesc.y);
             newEntity.setView(aCircleView);
 
             this.fieldController.addEntity(newEntity);
@@ -1075,6 +1078,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Point = __webpack_require__(1);
+var Constants = __webpack_require__(0);
 
 /**
  File:
@@ -1103,15 +1107,17 @@ var GameEntity = function () {
         this.view = null;
         this.lastReceivedEntityDescription = null; // The last received entity description (set by renderAtTime)
 
+        this.radius = 40;
         this.clientid = aClientid;
         this.entityid = anEntityid;
         this.traits = [];
         this.position = new Point(0, 0);
+        this.entityType = Constants.UNKNOWN;
         return this;
     }
 
     _createClass(GameEntity, [{
-        key: "updateView",
+        key: 'updateView',
 
 
         /**
@@ -1129,7 +1135,7 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "updatePosition",
+        key: 'updatePosition',
         value: function updatePosition(speedFactor, gameClock, gameTick) {}
         // OVERRIDE
 
@@ -1140,14 +1146,14 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "constructEntityDescription",
+        key: 'constructEntityDescription',
         value: function constructEntityDescription(gameTick, wantsFullUpdate) {
             // Note: "~~" is just a way to round the value without the Math.round function call
             var returnString = this.entityid;
             returnString += "," + this.clientid;
             returnString += "," + this.entityType;
-            returnString += "," + ~~this.position.x;
-            returnString += "," + ~~this.position.y;
+            returnString += "," + 0; //~~this.position.x;
+            returnString += "," + 0; //~~this.position.y;
 
             return returnString;
         }
@@ -1161,7 +1167,7 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "addTrait",
+        key: 'addTrait',
         value: function addTrait(aTrait) {
             // Check if we already have this trait, if we do - make sure the trait allows stacking
             var existingVersionOfTrait = this.getTraitWithName(aTrait.displayName);
@@ -1186,7 +1192,7 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "addTraitAndExecute",
+        key: 'addTraitAndExecute',
         value: function addTraitAndExecute(aTrait) {
             var wasAdded = this.addTrait(aTrait);
             if (wasAdded) {
@@ -1203,7 +1209,7 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "removeTraitWithName",
+        key: 'removeTraitWithName',
         value: function removeTraitWithName(aTraitName) {
             var len = this.traits.length;
             var removedTraits = null;
@@ -1228,7 +1234,7 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "removeAllTraits",
+        key: 'removeAllTraits',
         value: function removeAllTraits() {
             var i = this.traits.length;
             while (i--) {
@@ -1241,7 +1247,7 @@ var GameEntity = function () {
         ///// MEMORY
 
     }, {
-        key: "dealloc",
+        key: 'dealloc',
         value: function dealloc() {
             this.position = null;
             this.removeAllTraits();
@@ -1251,12 +1257,12 @@ var GameEntity = function () {
         ////// ACCESSORS
 
     }, {
-        key: "setView",
+        key: 'setView',
         value: function setView(aView) {
             this.view = aView;
         }
     }, {
-        key: "getView",
+        key: 'getView',
         value: function getView() {
             return this.view;
         }
@@ -1266,7 +1272,7 @@ var GameEntity = function () {
          */
 
     }, {
-        key: "getTraitWithName",
+        key: 'getTraitWithName',
         value: function getTraitWithName(aTraitName) {
             var len = this.traits.length;
             var trait = null;
@@ -1279,7 +1285,7 @@ var GameEntity = function () {
             return trait;
         }
     }, {
-        key: "doSomething",
+        key: 'doSomething',
         value: function doSomething() {
             return "hi";
         }
@@ -1490,7 +1496,7 @@ var DemoView = function () {
     }, {
         key: 'dealloc',
         value: function dealloc() {
-            this.director.destroy();
+            this.caatDirector.destroy();
         }
     }]);
 
@@ -1713,6 +1719,7 @@ var AbstractClientGame = function (_AbstractGame) {
             // Update players
             nextWED.forEach(function (key, entityDesc) {
                 // Catch garbage values
+                debugger;
                 var entityid = entityDesc.entityid;
                 var entity = this.fieldController.getEntityWithid(entityid);
 
@@ -1728,10 +1735,10 @@ var AbstractClientGame = function (_AbstractGame) {
                     if (!previousEntityDescription) return;
 
                     // Store past and future positions to compare
-                    entityPositionPast.set(previousEntityDescription.x, previousEntityDescription.y);
+                    entityPositionPast.setPos(previousEntityDescription.x, previousEntityDescription.y);
                     entityRotationPast = previousEntityDescription.rotation;
 
-                    entityPositionFuture.set(entityDesc.x, entityDesc.y);
+                    entityPositionFuture.setPos(entityDesc.x, entityDesc.y);
                     entityRotationFuture = entityDesc.rotation;
 
                     // if the distance between prev and next is too great - don't interpolate
@@ -2095,11 +2102,12 @@ var FieldController = function () {
             var entity = this.entities.objectForKey(entityid);
 
             if (entity != null) {
-                entity.getPosition().x = newPosition.x;
-                entity.getPosition().y = newPosition.y;
+                entity.position.x = newPosition.x;
+                entity.position.y = newPosition.y;
                 entity.rotation = newRotation;
                 entity.lastReceivedEntityDescription = newEntityDescription;
             } else {
+                debugger;
                 console.log("(FieldController)::updateEntity - Error: Cannot find entity with entityid", entityid);
             }
         }
@@ -2339,6 +2347,7 @@ var ClientNetChannel = function () {
             console.log(Constants.CMDS);
             console.log(Constants.CMDS.SERVER_FULL_UPDATE);
             this.cmdMap[Constants.CMDS.SERVER_FULL_UPDATE] = this.onServerWorldUpdate;
+            this.cmdMap[Constants.CMDS.PLAYER_JOINED] = this.onJoined;
         }
 
         ///// SocketIO Callbacks
@@ -2458,6 +2467,12 @@ var ClientNetChannel = function () {
                 this.sendMessage(this.nextUnreliable);
                 this.nextUnreliable = null;
             }
+        }
+    }, {
+        key: 'onJoined',
+        value: function onJoined(msg) {
+            console.log("client joined");
+            console.log(msg);
         }
 
         /**
@@ -2799,10 +2814,9 @@ var PlayerEntity = function (_CircleEntity) {
 
         var _this = _possibleConstructorReturn(this, (PlayerEntity.__proto__ || Object.getPrototypeOf(PlayerEntity)).call(this, anEntityid, aClientid));
 
+        _this.entityid = anEntityid;
         _this.entityType = Constants.PLAYER_ENTITY;
-        _this.input = null;
-        _this.radius = 40;
-        _this.position = new Point(0, 0);
+
         return _ret = _this, _possibleConstructorReturn(_this, _ret);
     }
 
@@ -2815,11 +2829,6 @@ var PlayerEntity = function (_CircleEntity) {
         key: 'setInput',
         value: function setInput(input) {
             this.input = input;
-        }
-    }, {
-        key: 'getPosition',
-        value: function getPosition() {
-            _get(PlayerEntity.prototype.__proto__ || Object.getPrototypeOf(PlayerEntity.prototype), 'getPosition', this).call(this);
         }
     }, {
         key: 'updatePosition',

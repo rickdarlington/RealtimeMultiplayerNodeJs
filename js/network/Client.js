@@ -74,7 +74,6 @@ class Client {
      * @param gameClock           The current (zero-based) game clock
      */
     compressDeltaAndQueueMessage (worldDescription, gameClock) {
-        debugger;
         var allEntities = worldDescription.entities,
             len = allEntities.length;
 

@@ -56,6 +56,12 @@ class DemoClientGame extends AbstractClientGame {
 
         var diameter = entityDesc.radius * 2;
 
+        if(!entityDesc.entityType) {
+            console.log("demoClientGame");
+            console.log(entityDesc.entityType + " " + entityDesc.entityid);
+            return;
+        }
+
         // Create a view via CAAT
         var aCircleView = new CAAT.ShapeActor();
         aCircleView.create();
@@ -67,7 +73,7 @@ class DemoClientGame extends AbstractClientGame {
 
         var isOwnedByMe = entityDesc.clientid == this.netChannel.clientid;
         // If this is a player entity
-        if (entityDesc.entityType & Constants.ENTITY_TYPES.PLAYER_ENTITY) {
+        if (entityDesc.entityType & Constants.PLAYER_ENTITY) {
             newEntity = new PlayerEntity(entityDesc.entityid, entityDesc.clientid);
 
             // If it is a player entity and it's my player entity - attach a KeyboardInputTrait to it
@@ -79,7 +85,7 @@ class DemoClientGame extends AbstractClientGame {
             newEntity = new CircleEntity(entityDesc.entityid, entityDesc.clientid);
         }
 
-        newEntity.getPosition().setPos(entityDesc.x, entityDesc.y);
+        newEntity.position.setPos(entityDesc.x, entityDesc.y);
         newEntity.setView(aCircleView);
 
         this.fieldController.addEntity(newEntity);

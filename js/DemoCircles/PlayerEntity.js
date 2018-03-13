@@ -18,10 +18,9 @@ var Point = require('../model/Point');
 class PlayerEntity extends CircleEntity{
     constructor(anEntityid, aClientid) {
         super(anEntityid, aClientid);
+        this.entityid = anEntityid;
         this.entityType = Constants.PLAYER_ENTITY;
-        this.input = null;
-        this.radius = 40;
-        this.position = new Point(0,0);
+
         return this;
     };
 
@@ -31,10 +30,6 @@ class PlayerEntity extends CircleEntity{
 
     setInput(input) {
         this.input = input;
-    }
-    
-    getPosition() {
-        super.getPosition();
     }
 
     updatePosition() {

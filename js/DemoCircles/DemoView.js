@@ -67,7 +67,7 @@ class DemoView {
 
     // Memory
     dealloc() {
-        this.director.destroy();
+        this.caatDirector.destroy();
     }
 }
 

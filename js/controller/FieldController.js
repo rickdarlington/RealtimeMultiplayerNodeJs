@@ -42,11 +42,12 @@ class FieldController {
         var entity = this.entities.objectForKey(entityid);
 
         if (entity != null) {
-            entity.getPosition().x = newPosition.x;
-            entity.getPosition().y = newPosition.y;
+            entity.position.x = newPosition.x;
+            entity.position.y = newPosition.y;
             entity.rotation = newRotation;
             entity.lastReceivedEntityDescription = newEntityDescription;
         } else {
+            debugger;
             console.log("(FieldController)::updateEntity - Error: Cannot find entity with entityid", entityid);
         }
     }
